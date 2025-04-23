@@ -43,7 +43,7 @@
       background-color: #3a6edc;
     }
     #game {
-      display: flex;
+      display: none;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
@@ -244,7 +244,7 @@ function checkAnswer() {
 
   setTimeout(() => {
     feedback.style.display = 'none'; // Das Overlay nach der Pause ausblenden
-    feedback.style.backgroundColor = ''; // Hintergrundfarbe zurücksetzen
+    imgContainer.style.backgroundColor = '';
     loadScreenshot();
   }, 1500); // Die Hintergrundfarbe bleibt 1 Sekunde lang
 }
