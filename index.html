@@ -62,7 +62,7 @@
 <body>
   <div class="container" id="landing">
     <h1>R6 Map Guesser</h1>
-    <p>Can you recognize Rainbow Six Siege maps from a single screenshot? Test your knowledge now!</p>
+    <p>Can you recognize Rainbow Six Siege maps from a single screenshot? Test your knowledge!</p>
     <button onclick="startGame()">Play</button>
   </div>
 
@@ -70,30 +70,36 @@
     <img id="screenshot" src="" alt="Map screenshot">
     <select id="mapSelect">
       <option value="">Select a map</option>
-      <option value="Oregon">Oregon</option>
-      <option value="House">House</option>
-      <option value="Clubhouse">Clubhouse</option>
-      <option value="Kafe Dostoyevsky">Kafe Dostoyevsky</option>
-      <option value="Coastline">Coastline</option>
+      <!-- Dynamically inserted map options -->
     </select>
     <button onclick="checkAnswer()">Submit</button>
     <p id="result"></p>
   </div>
 
   <script>
-  // Liste aller Maps, die aktuell im Spiel sind
+  // List of maps and the number of screenshots for each map
   const mapData = {
-    house: 16,
-    oregon: 29
+    house: 3,  // Example: 3 screenshots for House
+    oregon: 3, // Example: 3 screenshots for Oregon
+
   };
 
-  // Generiert aus den Dateinamen ein Array von Screenshots
+  // Dynamically adding map options to the select menu
+  const mapSelect = document.getElementById('mapSelect');
+  Object.keys(mapData).forEach(mapName => {
+    const option = document.createElement('option');
+    option.value = mapName.charAt(0).toUpperCase() + mapName.slice(1); // E.g. "house" -> "House"
+    option.textContent = option.value;
+    mapSelect.appendChild(option);
+  });
+
+  // Generate screenshots based on the map and the number of screenshots
   const screenshots = [];
   for (const [mapName, count] of Object.entries(mapData)) {
     for (let i = 1; i <= count; i++) {
       screenshots.push({
-        src: `${mapName}${i}.jpg`,
-        answer: mapName.charAt(0).toUpperCase() + mapName.slice(1) // z. B. "house" → "House"
+        src: `screenshots/${mapName}${i}.png`, // Path to the .png images
+        answer: mapName.charAt(0).toUpperCase() + mapName.slice(1) // E.g. "house" -> "House"
       });
     }
   }
@@ -122,6 +128,6 @@
     }
     setTimeout(loadScreenshot, 2000);
   }
-</script>
+  </script>
 </body>
 </html>
