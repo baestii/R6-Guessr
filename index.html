@@ -57,8 +57,9 @@
       border-radius: 0.5rem;
       border: none;
     }
-    #gameOver {
+    #endScreen {
       display: none;
+      text-align: center;
     }
   </style>
 </head>
@@ -66,6 +67,11 @@
   <div class="container" id="landing">
     <h1>R6 Map Guesser</h1>
     <p>Can you recognize Rainbow Six Siege maps from a single screenshot? Test your knowledge!</p>
+    <label for="roundsSelect">Rounds: </label>
+    <select id="roundsSelect">
+      <option value="5">5 Rounds</option>
+      <option value="10">10 Rounds</option>
+    </select>
     <button onclick="startGame()">Play</button>
   </div>
 
@@ -78,83 +84,101 @@
     <p id="result"></p>
   </div>
 
-  <div id="gameOver">
-    <h1>Game Over!</h1>
-    <p id="finalScore">Your final score: 0</p>
-    <button onclick="restartGame()">Play Again</button>
+  <div id="endScreen">
+    <h1>Game Over! Thanks for playing!</h1>
+    <p id="score">Your score: 0</p>
+    <button onclick="playAgain()">Play Again</button>
+    <button onclick="goToLanding()">Back to Start</button>
   </div>
 
   <script>
-    // List of maps and the number of screenshots for each map
-    const mapData = {
-      house: 16,  // 16 screenshots for House
-      oregon: 3   // 3 screenshots for Oregon
-    };
+  const mapData = {
+    house: 16,
+    oregon: 3
+  };
 
-    const mapSelect = document.getElementById('mapSelect');
-    Object.keys(mapData).forEach(mapName => {
-      const option = document.createElement('option');
-      option.value = mapName.charAt(0).toUpperCase() + mapName.slice(1);
-      option.textContent = option.value;
-      mapSelect.appendChild(option);
-    });
+  const mapSelect = document.getElementById('mapSelect');
+  Object.keys(mapData).forEach(mapName => {
+    const option = document.createElement('option');
+    option.value = mapName.charAt(0).toUpperCase() + mapName.slice(1); 
+    option.textContent = option.value;
+    mapSelect.appendChild(option);
+  });
 
-    const screenshots = [];
-    for (const [mapName, count] of Object.entries(mapData)) {
-      for (let i = 1; i <= count; i++) {
-        screenshots.push({
-          src: `screenshots/${mapName}/${mapName}${i}.png`,
-          answer: mapName.charAt(0).toUpperCase() + mapName.slice(1)
-        });
-      }
+  const screenshots = [];
+  for (const [mapName, count] of Object.entries(mapData)) {
+    for (let i = 1; i <= count; i++) {
+      screenshots.push({
+        src: `screenshots/${mapName}/${mapName}${i}.png`,
+        answer: mapName.charAt(0).toUpperCase() + mapName.slice(1)
+      });
+    }
+  }
+
+  let current = {};
+  let rounds = 5;  // Default to 5 rounds
+  let roundCount = 0;
+  let correctAnswers = 0;
+  let usedScreenshots = [];
+
+  function startGame() {
+    rounds = document.getElementById('roundsSelect').value;
+    document.getElementById('landing').style.display = 'none';
+    document.getElementById('game').style.display = 'flex';
+    document.getElementById('endScreen').style.display = 'none';
+    roundCount = 0;
+    correctAnswers = 0;
+    usedScreenshots = [];
+    loadScreenshot();
+  }
+
+  function loadScreenshot() {
+    if (roundCount >= rounds) {
+      showEndScreen();
+      return;
     }
 
-    let current = {};
-    let score = 0;
-    let roundsPlayed = 0;
-
-    function startGame() {
-      score = 0; // Reset score at the start of the game
-      roundsPlayed = 0;
-      document.getElementById('landing').style.display = 'none';
-      document.getElementById('gameOver').style.display = 'none';
-      document.getElementById('game').style.display = 'flex';
-      loadScreenshot();
+    let availableScreenshots = screenshots.filter(screenshot => !usedScreenshots.includes(screenshot.src));
+    if (availableScreenshots.length === 0) {
+      usedScreenshots = [];
+      availableScreenshots = screenshots;
     }
 
-    function loadScreenshot() {
-      if (roundsPlayed >= 5) { // End the game after 5 rounds
-        endGame();
-        return;
-      }
+    current = availableScreenshots[Math.floor(Math.random() * availableScreenshots.length)];
+    usedScreenshots.push(current.src);
 
-      current = screenshots[Math.floor(Math.random() * screenshots.length)];
-      document.getElementById('screenshot').src = current.src;
-      document.getElementById('result').textContent = '';
-      document.getElementById('mapSelect').value = '';
-    }
+    document.getElementById('screenshot').src = current.src;
+    document.getElementById('result').textContent = '';
+    document.getElementById('mapSelect').value = '';
+    roundCount++;
+  }
 
-    function checkAnswer() {
-      const guess = document.getElementById('mapSelect').value;
-      if (guess.toLowerCase() === current.answer.toLowerCase()) {
-        document.getElementById('result').textContent = "Correct! 🎯";
-        score++;
-      } else {
-        document.getElementById('result').textContent = `Wrong! The correct map was ${current.answer}.`;
-      }
-      roundsPlayed++;
-      setTimeout(loadScreenshot, 2000);
+  function checkAnswer() {
+    const guess = document.getElementById('mapSelect').value;
+    if (guess.toLowerCase() === current.answer.toLowerCase()) {
+      correctAnswers++;
+      document.getElementById('result').textContent = "Correct! 🎯";
+    } else {
+      document.getElementById('result').textContent = `Wrong! The correct map was ${current.answer}.`;
     }
+    setTimeout(loadScreenshot, 2000);
+  }
 
-    function endGame() {
-      document.getElementById('game').style.display = 'none';
-      document.getElementById('gameOver').style.display = 'flex';
-      document.getElementById('finalScore').textContent = `Your final score: ${score}`;
-    }
+  function showEndScreen() {
+    document.getElementById('game').style.display = 'none';
+    document.getElementById('endScreen').style.display = 'flex';
+    document.getElementById('score').textContent = `Your score: ${correctAnswers}`;
+  }
 
-    function restartGame() {
-      startGame();
-    }
+  function playAgain() {
+    document.getElementById('endScreen').style.display = 'none';
+    startGame();
+  }
+
+  function goToLanding() {
+    document.getElementById('endScreen').style.display = 'none';
+    document.getElementById('landing').style.display = 'flex';
+  }
   </script>
 </body>
 </html>
