@@ -234,14 +234,21 @@
         return;
       }
 
+      if (difficulty === 'progressive') {
+      if (currentRound >= availableScreenshots.length) {
+        endGame();
+        return;
+       }
+      current = availableScreenshots[currentRound];
+    } else {
       let unused = availableScreenshots.filter(s => !usedScreenshots.includes(s.src));
       if (unused.length === 0) {
         endGame();
         return;
-      }
-
+     }
       current = unused[Math.floor(Math.random() * unused.length)];
       usedScreenshots.push(current.src);
+    }
       currentRound++;
 
       const img = document.getElementById('screenshot');
