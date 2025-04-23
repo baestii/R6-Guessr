@@ -57,18 +57,15 @@
       border-radius: 0.5rem;
       border: none;
     }
+    #gameOver {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <div class="container" id="landing">
     <h1>R6 Map Guesser</h1>
     <p>Can you recognize Rainbow Six Siege maps from a single screenshot? Test your knowledge!</p>
-    <label for="roundLength">Choose number of rounds:</label>
-    <select id="roundLength">
-      <option value="5">5 Rounds</option>
-      <option value="10">10 Rounds</option>
-    </select>
-    <br><br>
     <button onclick="startGame()">Play</button>
   </div>
 
@@ -81,10 +78,17 @@
     <p id="result"></p>
   </div>
 
+  <div id="gameOver">
+    <h1>Game Over!</h1>
+    <p id="finalScore">Your final score: 0</p>
+    <button onclick="restartGame()">Play Again</button>
+  </div>
+
   <script>
+    // List of maps and the number of screenshots for each map
     const mapData = {
-      house: 16,
-      oregon: 3
+      house: 16,  // 16 screenshots for House
+      oregon: 3   // 3 screenshots for Oregon
     };
 
     const mapSelect = document.getElementById('mapSelect');
@@ -95,53 +99,61 @@
       mapSelect.appendChild(option);
     });
 
-    // Generiert Screenshots basierend auf den neuen Werten in mapData
-const screenshots = [];
-for (const [mapName, count] of Object.entries(mapData)) {
-  for (let i = 1; i <= count; i++) {
-    screenshots.push({
-      src: `screenshots/${mapName}/${mapName}${i}.png`,  // Verwendet die Bilder mit der richtigen Zahl
-      answer: mapName.charAt(0).toUpperCase() + mapName.slice(1)
+    const screenshots = [];
+    for (const [mapName, count] of Object.entries(mapData)) {
+      for (let i = 1; i <= count; i++) {
+        screenshots.push({
+          src: `screenshots/${mapName}/${mapName}${i}.png`,
+          answer: mapName.charAt(0).toUpperCase() + mapName.slice(1)
         });
       }
     }
 
-    let availableScreenshots = [];
     let current = {};
-    let roundLimit = 5;
-    let roundCounter = 0;
+    let score = 0;
+    let roundsPlayed = 0;
 
     function startGame() {
+      score = 0; // Reset score at the start of the game
+      roundsPlayed = 0;
       document.getElementById('landing').style.display = 'none';
+      document.getElementById('gameOver').style.display = 'none';
       document.getElementById('game').style.display = 'flex';
-      roundLimit = parseInt(document.getElementById('roundLength').value);
-      availableScreenshots = [...allScreenshots];
-      roundCounter = 0;
       loadScreenshot();
     }
 
     function loadScreenshot() {
-      if (roundCounter >= roundLimit || availableScreenshots.length === 0) {
-        document.getElementById('game').innerHTML = `<h2>Game over! Thanks for playing!</h2>`;
+      if (roundsPlayed >= 5) { // End the game after 5 rounds
+        endGame();
         return;
       }
 
-      const index = Math.floor(Math.random() * availableScreenshots.length);
-      current = availableScreenshots.splice(index, 1)[0];
+      current = screenshots[Math.floor(Math.random() * screenshots.length)];
       document.getElementById('screenshot').src = current.src;
       document.getElementById('result').textContent = '';
       document.getElementById('mapSelect').value = '';
-      roundCounter++;
     }
 
     function checkAnswer() {
       const guess = document.getElementById('mapSelect').value;
       if (guess.toLowerCase() === current.answer.toLowerCase()) {
         document.getElementById('result').textContent = "Correct! 🎯";
+        score++;
       } else {
         document.getElementById('result').textContent = `Wrong! The correct map was ${current.answer}.`;
       }
+      roundsPlayed++;
       setTimeout(loadScreenshot, 2000);
+    }
+
+    function endGame() {
+      document.getElementById('game').style.display = 'none';
+      document.getElementById('gameOver').style.display = 'flex';
+      document.getElementById('finalScore').textContent = `Your final score: ${score}`;
+    }
+
+    function restartGame() {
+      startGame();
     }
   </script>
 </body>
