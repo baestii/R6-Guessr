@@ -95,12 +95,13 @@
       mapSelect.appendChild(option);
     });
 
-    const allScreenshots = [];
-    for (const [mapName, count] of Object.entries(mapData)) {
-      for (let i = 1; i <= count; i++) {
-        allScreenshots.push({
-          src: `screenshots/${mapName}/${mapName}${i}.png`,
-          answer: mapName.charAt(0).toUpperCase() + mapName.slice(1)
+    // Generiert Screenshots basierend auf den neuen Werten in mapData
+const screenshots = [];
+for (const [mapName, count] of Object.entries(mapData)) {
+  for (let i = 1; i <= count; i++) {
+    screenshots.push({
+      src: `screenshots/${mapName}/${mapName}${i}.png`,  // Verwendet die Bilder mit der richtigen Zahl
+      answer: mapName.charAt(0).toUpperCase() + mapName.slice(1)
         });
       }
     }
