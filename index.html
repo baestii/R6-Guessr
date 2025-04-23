@@ -60,18 +60,12 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.3); /* Transparenter Overlay, um das Feedback hervorzuheben */
+      background-color: rgba(0, 0, 0, 0.3);
       z-index: 0;
-      transition: background-color 1s ease; /* sanfte Übergänge für Feedback */
+      transition: background-color 1s ease;
       display: none;
     }
-    #screenshot {
-      max-width: 80vw;
-      max-height: 50vh;
-      border-radius: 1rem;
-      margin-bottom: 1rem;
-    }
-    img {
+    #screenshot, img {
       max-width: 80vw;
       max-height: 50vh;
       border-radius: 1rem;
@@ -128,15 +122,13 @@
   </div>
 
   <script>
-    // Daten: Wie viele Screenshots pro Map vorhanden sind
     const mapData = {
-      house: 16,
-      oregon: 29,
-      clubhouse: 68,
-      consulate: 77
+      house: { count: 16, easy: [1, 2, 4, 6], normal: [3, 5, 7], hard: [8, 9, 10] },
+      oregon: { count: 29, easy: [1, 2, 3], normal: [4, 5, 6], hard: [7, 8, 9] },
+      clubhouse: { count: 68, easy: [1, 2, 3], normal: [4, 5, 6], hard: [7, 8, 9] },
+      consulate: { count: 77, easy: [1, 2, 3], normal: [4, 5, 6], hard: [7, 8, 9] }
     };
 
-    // DropDown wird mit allen Map-Namen befüllt
     const mapSelect = document.getElementById('mapSelect');
     Object.keys(mapData).forEach(mapName => {
       const option = document.createElement('option');
@@ -145,40 +137,69 @@
       mapSelect.appendChild(option);
     });
 
-    // Alle Screenshots generieren mit Pfad und richtiger Antwort
-    let allScreenshots = [];
-    for (const [mapName, count] of Object.entries(mapData)) {
-      for (let i = 1; i <= count; i++) {
-        allScreenshots.push({
-          src: `screenshots/${mapName}/${mapName}${i}.png`,
-          answer: mapName.charAt(0).toUpperCase() + mapName.slice(1)
-        });
+    function generateScreenshots(difficulty, rounds) {
+      const shots = [];
+      const keys = Object.keys(mapData);
+
+      function addShotsFromDifficulty(level, num) {
+        while (num > 0) {
+          const map = keys[Math.floor(Math.random() * keys.length)];
+          const available = mapData[map][level];
+          if (available?.length) {
+            const idx = available[Math.floor(Math.random() * available.length)];
+            shots.push({ src: `screenshots/${map}/${map}${idx}.png`, answer: map.charAt(0).toUpperCase() + map.slice(1) });
+            num--;
+          }
+        }
       }
+
+      switch (difficulty) {
+        case 'easy': addShotsFromDifficulty('easy', rounds); break;
+        case 'normal': addShotsFromDifficulty('normal', rounds); break;
+        case 'hard': addShotsFromDifficulty('hard', rounds); break;
+        case 'progressive': {
+          const easy = Math.floor(rounds / 3);
+          const normal = Math.floor(rounds / 3);
+          const hard = rounds - easy - normal;
+          addShotsFromDifficulty('easy', easy);
+          addShotsFromDifficulty('normal', normal);
+          addShotsFromDifficulty('hard', hard);
+          break;
+        }
+        default: {
+          for (let i = 0; i < rounds; i++) {
+            const map = keys[Math.floor(Math.random() * keys.length)];
+            const num = Math.floor(Math.random() * mapData[map].count) + 1;
+            shots.push({ src: `screenshots/${map}/${map}${num}.png`, answer: map.charAt(0).toUpperCase() + map.slice(1) });
+          }
+        }
+      }
+      return shots;
     }
 
+    let allScreenshots = [];
     let roundCount = 5;
     let currentRound = 0;
     let score = 0;
     let current = {};
-    let usedScreenshots = [];
 
-    // Zurück zum Startbildschirm
     function goToLanding() {
       document.getElementById('endScreen').style.display = 'none';
       document.getElementById('landing').style.display = 'block';
       document.getElementById('game').style.display = 'none';
       score = 0;
       currentRound = 0;
-      usedScreenshots = [];
     }
 
-    // Spiel starten, Anzahl der Runden holen, Spielbildschirm anzeigen
     function startGame() {
       const roundSelect = document.getElementById('roundsSelect');
+      const difficultySelect = document.getElementById('difficultySelect');
       roundCount = parseInt(roundSelect.value, 10) || 5;
-      usedScreenshots = [];
+      const difficulty = difficultySelect.value;
       score = 0;
       currentRound = 0;
+
+      allScreenshots = generateScreenshots(difficulty, roundCount);
 
       document.getElementById('landing').style.display = 'none';
       document.getElementById('game').style.display = 'flex';
@@ -188,36 +209,19 @@
       loadScreenshot();
     }
 
-    // Screenshot laden und anzeigen
     function loadScreenshot() {
-      if (currentRound >= roundCount) {
-        endGame();
-        return;
-      }
-
-      let unused = allScreenshots.filter(s => !usedScreenshots.includes(s.src));
-      if (unused.length === 0) {
-        endGame();
-        return;
-      }
-
-      current = unused[Math.floor(Math.random() * unused.length)];
-      usedScreenshots.push(current.src);
+      if (currentRound >= roundCount) return endGame();
+      current = allScreenshots[currentRound];
       currentRound++;
-
       const img = document.getElementById('screenshot');
       img.style.opacity = 0;
-      img.onload = () => {
-        img.style.opacity = 1;
-      };
-
+      img.onload = () => img.style.opacity = 1;
       img.src = current.src;
       document.getElementById('result').textContent = '';
       document.getElementById('mapSelect').value = '';
       updateStats();
     }
 
-    // Runden- und Punktestand aktualisieren
     function updateStats() {
       if (!document.getElementById('roundInfo')) {
         const stats = document.getElementById('stats');
@@ -227,38 +231,31 @@
       document.getElementById('scoreInfo').textContent = `Points: ${score}`;
     }
 
-    // Antwort überprüfen und Feedback anzeigen
-function checkAnswer() {
-  const guess = document.getElementById('mapSelect').value;
-  if (!guess) return;
+    function checkAnswer() {
+      const guess = document.getElementById('mapSelect').value;
+      if (!guess) return;
+      const result = document.getElementById('result');
+      const feedback = document.getElementById('gameFeedback');
+      const game = document.getElementById('game');
+      feedback.style.display = 'block';
+      if (guess.toLowerCase() === current.answer.toLowerCase()) {
+        score++;
+        result.textContent = "Correct! 🎯";
+        result.style.color = 'green';
+        game.style.backgroundColor = 'rgba(0, 255, 0, 0.2)';
+      } else {
+        result.textContent = `Wrong! It was ${current.answer}.`;
+        result.style.color = 'red';
+        game.style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
+      }
+      updateStats();
+      setTimeout(() => {
+        feedback.style.display = 'none';
+        game.style.backgroundColor = '';
+        loadScreenshot();
+      }, 1500);
+    }
 
-  const result = document.getElementById('result');
-  const imgContainer = document.getElementById('game'); // Der Container, der den Bildschirm darstellt
-  const feedback = document.getElementById('gameFeedback');
-
-   feedback.style.display = 'block';
-  
-  if (guess.toLowerCase() === current.answer.toLowerCase()) {
-    score++;
-    result.textContent = "Correct! 🎯";
-    result.style.color = 'green'; // Text wird grün
-    imgContainer.style.backgroundColor = 'rgba(0, 255, 0, 0.2)'; // Bildschirm wird sanft grün
-  } else {
-    result.textContent = `Wrong! It was ${current.answer}.`;
-    result.style.color = 'red'; // Text wird rot
-    imgContainer.style.backgroundColor = 'rgba(255, 0, 0, 0.2)'; // Bildschirm wird sanft rot
-  }
-
-  updateStats();
-
-  setTimeout(() => {
-    feedback.style.display = 'none'; // Das Overlay nach der Pause ausblenden
-    imgContainer.style.backgroundColor = '';
-    loadScreenshot();
-  }, 1500); // Die Hintergrundfarbe bleibt 1 Sekunde lang
-}
-
-    // Spiel beenden, Endscreen anzeigen
     function endGame() {
       document.getElementById('game').style.display = 'none';
       document.getElementById('endScreen').style.display = 'block';
