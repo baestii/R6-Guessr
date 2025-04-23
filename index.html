@@ -66,6 +66,7 @@
 <body>
   <div class="container" id="landing">
     <h1>R6 Map Guesser</h1>
+    <button id="submitBtn" onclick="checkAnswer()">Submit</button>
     <p>Can you recognize Rainbow Six Siege maps from a single screenshot? Test your knowledge!</p>
     <label for="roundsSelect">Rounds: </label>
     <select id="roundsSelect">
@@ -76,18 +77,19 @@
   </div>
 
   <div id="game">
+    <p id="stats"></p>
     <img id="screenshot" src="" alt="Map screenshot">
     <select id="mapSelect">
       <option value="">Select a map</option>
     </select>
-    <button onclick="checkAnswer()">Submit</button>
+    <button onclick="checkAnswer()">Submit</>
     <p id="result"></p>
   </div>
 
    <div id="endScreen" style="display: none; text-align: center;">
     <h2>Game Over! GOLD GOLD GOLD🎉</h2>
     <p id="finalScore"></p>
-    <button onclick="startGame()">Play again</button>
+    < onclick="startGame()">Play again</button>
     <button onclick="goToLanding()">Back to start</button>
   </div>
 
@@ -131,7 +133,8 @@
   }
 
   function startGame() {
-    roundCount = parseInt(document.querySelector('input[name="rounds"]:checked')?.value || 5);
+    const roundSelect = document.getElementById('roundSelect');
+    roundCount = parseInt(roundSelect.value, 10) || 5;
     usedScreenshots = [];
     score = 0;
     currentRound = 0;
@@ -140,6 +143,7 @@
     document.getElementById('game').style.display = 'flex';
     document.getElementById('endScreen').style.display = 'none';
 
+    updateStats();
     loadScreenshot();
   }
 
