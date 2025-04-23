@@ -36,6 +36,7 @@
       border-radius: 0.5rem;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      margin-top: 1rem;
     }
     button:hover {
       background-color: #3a6edc;
@@ -44,6 +45,7 @@
       display: none;
       flex-direction: column;
       align-items: center;
+      transition: background-color 0.5s ease;
     }
     img {
       max-width: 80vw;
@@ -190,25 +192,31 @@
     }
 
     // Antwort überprüfen und Feedback anzeigen
-    function checkAnswer() {
-      const guess = document.getElementById('mapSelect').value;
-      if (!guess) return;
+function checkAnswer() {
+  const guess = document.getElementById('mapSelect').value;
+  if (!guess) return;
 
-      const mapSelect = document.getElementById('mapSelect');
+  const result = document.getElementById('result');
+  const imgContainer = document.getElementById('game'); // Der Container, der den Bildschirm darstellt
 
-      if (guess.toLowerCase() === current.answer.toLowerCase()) {
-        score++;
-        document.getElementById('result').textContent = "Correct! 🎯";
-      } else {
-        document.getElementById('result').textContent = `Wrong! It was ${current.answer}.`;
-      }
+  if (guess.toLowerCase() === current.answer.toLowerCase()) {
+    score++;
+    result.textContent = "Correct! 🎯";
+    result.style.color = 'green'; // Text wird grün
+    imgContainer.style.backgroundColor = 'rgba(0, 255, 0, 0.2)'; // Bildschirm wird sanft grün
+  } else {
+    result.textContent = `Wrong! It was ${current.answer}.`;
+    result.style.color = 'red'; // Text wird rot
+    imgContainer.style.backgroundColor = 'rgba(255, 0, 0, 0.2)'; // Bildschirm wird sanft rot
+  }
 
-      updateStats();
+  updateStats();
 
-      setTimeout(() => {
-        loadScreenshot();
-      }, 1500);
-    }
+  setTimeout(() => {
+    imgContainer.style.backgroundColor = ''; // Hintergrundfarbe zurücksetzen
+    loadScreenshot();
+  }, 1000); // Die Hintergrundfarbe bleibt 1 Sekunde lang
+}
 
     // Spiel beenden, Endscreen anzeigen
     function endGame() {
