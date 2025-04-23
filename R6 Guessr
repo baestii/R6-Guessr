@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>R6 Map Guesser</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #1e1e2f;
+      color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .container {
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+    button {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      background-color: #4e8cff;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #3a6edc;
+    }
+    #game {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+    img {
+      max-width: 80vw;
+      max-height: 50vh;
+      border-radius: 1rem;
+      margin-bottom: 1rem;
+    }
+    select {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border-radius: 0.5rem;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="landing">
+    <h1>R6 Map Guesser</h1>
+    <p>Can you recognize Rainbow Six Siege maps from a single screenshot? Test your knowledge now!</p>
+    <button onclick="startGame()">Play</button>
+  </div>
+
+  <div id="game">
+    <img id="screenshot" src="" alt="Map screenshot">
+    <select id="mapSelect">
+      <option value="">Select a map</option>
+      <option value="Oregon">Oregon</option>
+      <option value="Clubhouse">Clubhouse</option>
+      <option value="Kafe Dostoyevsky">Kafe Dostoyevsky</option>
+      <option value="Coastline">Coastline</option>
+    </select>
+    <button onclick="checkAnswer()">Submit</button>
+    <p id="result"></p>
+  </div>
+
+  <script>
+    const screenshots = [
+      { src: "https://example.com/oregon1.jpg", answer: "Oregon" },
+      { src: "https://example.com/clubhouse1.jpg", answer: "Clubhouse" },
+      { src: "https://example.com/kafe1.jpg", answer: "Kafe Dostoyevsky" },
+      { src: "https://example.com/coastline1.jpg", answer: "Coastline" }
+    ];
+
+    let current = {};
+
+    function startGame() {
+      document.getElementById('landing').style.display = 'none';
+      document.getElementById('game').style.display = 'flex';
+      loadScreenshot();
+    }
+
+    function loadScreenshot() {
+      current = screenshots[Math.floor(Math.random() * screenshots.length)];
+      document.getElementById('screenshot').src = current.src;
+      document.getElementById('result').textContent = '';
+      document.getElementById('mapSelect').value = '';
+    }
+
+    function checkAnswer() {
+      const guess = document.getElementById('mapSelect').value;
+      if (guess === current.answer) {
+        document.getElementById('result').textContent = "Correct! 🎯";
+      } else {
+        document.getElementById('result').textContent = `Wrong! The correct map was ${current.answer}.`;
+      }
+      setTimeout(loadScreenshot, 2000);
+    }
+  </script>
+</body>
+</html>
