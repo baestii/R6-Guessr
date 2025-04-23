@@ -63,6 +63,7 @@
       background-color: rgba(0, 0, 0, 0.3); /* Transparenter Overlay, um das Feedback hervorzuheben */
       z-index: 0;
       transition: background-color 1s ease; /* sanfte Übergänge für Feedback */
+      display: none;
     }
     #screenshot {
       max-width: 80vw;
@@ -226,6 +227,8 @@ function checkAnswer() {
   const imgContainer = document.getElementById('game'); // Der Container, der den Bildschirm darstellt
   const feedback = document.getElementById('gameFeedback');
 
+   feedback.style.display = 'block';
+  
   if (guess.toLowerCase() === current.answer.toLowerCase()) {
     score++;
     result.textContent = "Correct! 🎯";
@@ -240,7 +243,8 @@ function checkAnswer() {
   updateStats();
 
   setTimeout(() => {
-    imgContainer.style.backgroundColor = ''; // Hintergrundfarbe zurücksetzen
+    feedback.style.display = 'none'; // Das Overlay nach der Pause ausblenden
+    feedback.style.backgroundColor = ''; // Hintergrundfarbe zurücksetzen
     loadScreenshot();
   }, 1500); // Die Hintergrundfarbe bleibt 1 Sekunde lang
 }
