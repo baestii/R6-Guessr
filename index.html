@@ -66,7 +66,6 @@
 <body>
   <div class="container" id="landing">
     <h1>R6 Map Guesser</h1>
-    <button id="submitBtn" onclick="checkAnswer()">Submit</button>
     <p>Can you recognize Rainbow Six Siege maps from a single screenshot? Test your knowledge!</p>
     <label for="roundsSelect">Rounds: </label>
     <select id="roundsSelect">
@@ -82,142 +81,142 @@
     <select id="mapSelect">
       <option value="">Select a map</option>
     </select>
-    <button onclick="checkAnswer()">Submit</>
+    <button onclick="checkAnswer()">Submit</button>
     <p id="result"></p>
   </div>
 
-   <div id="endScreen" style="display: none; text-align: center;">
+  <div id="endScreen">
     <h2>Game Over! GOLD GOLD GOLD🎉</h2>
     <p id="finalScore"></p>
-    < onclick="startGame()">Play again</button>
+    <button onclick="startGame()">Play again</button>
     <button onclick="goToLanding()">Back to start</button>
   </div>
 
-  <script>      //Hier einfach die Zahl hinter der Map auf die Anzahl der zu verfügungstehenden Screenshots stellen
-  const mapData = {
-    house: 16,
-    oregon: 3    //für neue Map Muss dann hinter oregon: 3 ein Komma also 3, nächste Zeile Mapname klein, dann Doppelpunkt, Leertaste und Nummer der Bilder, nur ein Komma wenns weiter in der Aufzählung geht
-  };
+  <script>
+    // Daten: Wie viele Screenshots pro Map vorhanden sind
+    const mapData = {
+      house: 16,
+      oregon: 29
+    };
 
-   const mapSelect = document.getElementById('mapSelect');
-  Object.keys(mapData).forEach(mapName => {
-    const option = document.createElement('option');
-    option.value = mapName.charAt(0).toUpperCase() + mapName.slice(1);
-    option.textContent = option.value;
-    mapSelect.appendChild(option);
-  });
+    // DropDown wird mit allen Map-Namen befüllt
+    const mapSelect = document.getElementById('mapSelect');
+    Object.keys(mapData).forEach(mapName => {
+      const option = document.createElement('option');
+      option.value = mapName.charAt(0).toUpperCase() + mapName.slice(1);
+      option.textContent = option.value;
+      mapSelect.appendChild(option);
+    });
 
-  let allScreenshots = [];
-  for (const [mapName, count] of Object.entries(mapData)) {
-    for (let i = 1; i <= count; i++) {
-      allScreenshots.push({
-        src: `screenshots/${mapName}/${mapName}${i}.png`,
-        answer: mapName.charAt(0).toUpperCase() + mapName.slice(1)
-      });
+    // Alle Screenshots generieren mit Pfad und richtiger Antwort
+    let allScreenshots = [];
+    for (const [mapName, count] of Object.entries(mapData)) {
+      for (let i = 1; i <= count; i++) {
+        allScreenshots.push({
+          src: `screenshots/${mapName}/${mapName}${i}.png`,
+          answer: mapName.charAt(0).toUpperCase() + mapName.slice(1)
+        });
+      }
     }
-  }
 
-  let roundCount = 5;
-  let currentRound = 0;
-  let score = 0;
-  let current = {};
-  let usedScreenshots = [];
+    let roundCount = 5;
+    let currentRound = 0;
+    let score = 0;
+    let current = {};
+    let usedScreenshots = [];
 
-  function goToLanding() {
-    document.getElementById('endScreen').style.display = 'none';
-    document.getElementById('landing').style.display = 'block';
-    document.getElementById('game').style.display = 'none';
-    score = 0;
-    currentRound = 0;
-    usedScreenshots = [];
-  }
-
-  function startGame() {
-    const roundSelect = document.getElementById('roundSelect');
-    roundCount = parseInt(roundSelect.value, 10) || 5;
-    usedScreenshots = [];
-    score = 0;
-    currentRound = 0;
-
-    document.getElementById('landing').style.display = 'none';
-    document.getElementById('game').style.display = 'flex';
-    document.getElementById('endScreen').style.display = 'none';
-
-    updateStats();
-    loadScreenshot();
-  }
-
-  function loadScreenshot() {
-  if (currentRound >= roundCount) {
-    endGame();
-    return;
-  }
-
-  let unused = allScreenshots.filter(s => !usedScreenshots.includes(s.src));
-  if (unused.length === 0) {
-    endGame();
-    return;
-  }
-
-  current = unused[Math.floor(Math.random() * unused.length)];
-  usedScreenshots.push(current.src);
-  currentRound++;
-
-  const img = document.getElementById('screenshot');
-  img.style.opacity = 0; // für smoothes Einblenden
-  img.onload = () => {
-    img.style.opacity = 1;
-  };
-
-  img.src = current.src;
-  document.getElementById('result').textContent = '';
-  document.getElementById('mapSelect').value = '';
-  updateStats();
-}
-
-  function updateStats() {
-    if (!document.getElementById('stats')) {
-      const stats = document.createElement('div');
-      stats.id = 'stats';
-      stats.style.marginBottom = '1rem';
-      stats.innerHTML = `<p id="roundInfo"></p><p id="scoreInfo"></p>`;
-      document.getElementById('game').prepend(stats);
+    // Zurück zum Startbildschirm
+    function goToLanding() {
+      document.getElementById('endScreen').style.display = 'none';
+      document.getElementById('landing').style.display = 'block';
+      document.getElementById('game').style.display = 'none';
+      score = 0;
+      currentRound = 0;
+      usedScreenshots = [];
     }
-    document.getElementById('roundInfo').textContent = `Round ${currentRound} of ${roundCount}`;
-    document.getElementById('scoreInfo').textContent = `Points: ${score}`;
-  }
 
-  function checkAnswer() {
-  const guess = document.getElementById('mapSelect').value;
-  if (!guess) return;
+    // Spiel starten, Anzahl der Runden holen, Spielbildschirm anzeigen
+    function startGame() {
+      const roundSelect = document.getElementById('roundsSelect');
+      roundCount = parseInt(roundSelect.value, 10) || 5;
+      usedScreenshots = [];
+      score = 0;
+      currentRound = 0;
 
-  const mapSelect = document.getElementById('mapSelect');
-  const submitBtn = document.getElementById('submitBtn');
-  mapSelect.disabled = true;
-  submitBtn.disabled = true;
+      document.getElementById('landing').style.display = 'none';
+      document.getElementById('game').style.display = 'flex';
+      document.getElementById('endScreen').style.display = 'none';
 
-  if (guess.toLowerCase() === current.answer.toLowerCase()) {
-    score++;
-    document.getElementById('result').textContent = "Correct! 🎯";
-  } else {
-    document.getElementById('result').textContent = `Wrong! It was ${current.answer}.`;
-  }
+      updateStats();
+      loadScreenshot();
+    }
 
-  updateStats();
+    // Screenshot laden und anzeigen
+    function loadScreenshot() {
+      if (currentRound >= roundCount) {
+        endGame();
+        return;
+      }
 
-  setTimeout(() => {
-    loadScreenshot();
-    mapSelect.disabled = false;
-    submitBtn.disabled = false;
-  }, 1500); // 1.5 Sekunden Pause zum Anzeigen der Antwort
-}
+      let unused = allScreenshots.filter(s => !usedScreenshots.includes(s.src));
+      if (unused.length === 0) {
+        endGame();
+        return;
+      }
 
+      current = unused[Math.floor(Math.random() * unused.length)];
+      usedScreenshots.push(current.src);
+      currentRound++;
 
-  function endGame() {
-    document.getElementById('game').style.display = 'none';
-    document.getElementById('endScreen').style.display = 'block';
-    document.getElementById('finalScore').textContent = `You scored ${score} out of ${roundCount}!`;
-  }
-</script>
+      const img = document.getElementById('screenshot');
+      img.style.opacity = 0;
+      img.onload = () => {
+        img.style.opacity = 1;
+      };
+
+      img.src = current.src;
+      document.getElementById('result').textContent = '';
+      document.getElementById('mapSelect').value = '';
+      updateStats();
+    }
+
+    // Runden- und Punktestand aktualisieren
+    function updateStats() {
+      if (!document.getElementById('roundInfo')) {
+        const stats = document.getElementById('stats');
+        stats.innerHTML = `<p id="roundInfo"></p><p id="scoreInfo"></p>`;
+      }
+      document.getElementById('roundInfo').textContent = `Round ${currentRound} of ${roundCount}`;
+      document.getElementById('scoreInfo').textContent = `Points: ${score}`;
+    }
+
+    // Antwort überprüfen und Feedback anzeigen
+    function checkAnswer() {
+      const guess = document.getElementById('mapSelect').value;
+      if (!guess) return;
+
+      const mapSelect = document.getElementById('mapSelect');
+
+      if (guess.toLowerCase() === current.answer.toLowerCase()) {
+        score++;
+        document.getElementById('result').textContent = "Correct! 🎯";
+      } else {
+        document.getElementById('result').textContent = `Wrong! It was ${current.answer}.`;
+      }
+
+      updateStats();
+
+      setTimeout(() => {
+        loadScreenshot();
+      }, 1500);
+    }
+
+    // Spiel beenden, Endscreen anzeigen
+    function endGame() {
+      document.getElementById('game').style.display = 'none';
+      document.getElementById('endScreen').style.display = 'block';
+      document.getElementById('finalScore').textContent = `You scored ${score} out of ${roundCount}!`;
+    }
+  </script>
 </body>
 </html>
