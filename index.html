@@ -180,24 +180,51 @@
 
     function generateAvailableScreenshots() {
       availableScreenshots = [];
-      for (const [mapName, data] of Object.entries(mapData)) {
-        let nums = [];
-        if (difficulty === 'easy') nums = data.easy;
-        else if (difficulty === 'normal') nums = data.normal;
-        else if (difficulty === 'hard') nums = data.hard;
-        else if (difficulty === 'progressive') nums = [...(data.easy || []), ...(data.normal || []), ...(data.hard || [])];
-        else {
-          for (let i = 1; i <= data.count; i++) {
-            nums.push(i);
-          }
-        }
 
-        nums.forEach(i => {
+      const mapNames = Object.keys(mapData);
+      const isProgressive = difficulty === 'progressive';
+
+      for (const mapName of mapNames) {
+        const data = mapData[mapName];
+        let difficultySequence = [];
+
+        if (difficulty === 'easy') difficultySequence = data.easy;
+        else if (difficulty === 'normal') difficultySequence = data.normal;
+        else if (difficulty === 'hard') difficultySequence = data.hard;
+        else if (difficulty === 'progressive') difficultySequence = [...data.easy, ...data.normal, ...data.hard];
+        else difficultySequence = Array.from({ length: data.count }, (_, i) => i + 1);
+
+        difficultySequence.forEach(i => {
           availableScreenshots.push({
             src: `screenshots/${mapName}/${mapName}${i}.png`,
             answer: mapName.charAt(0).toUpperCase() + mapName.slice(1)
           });
         });
+      }
+
+      if (difficulty === 'progressive') {
+        const ordered = [];
+        const fullList = [...availableScreenshots];
+        const total = fullList.length;
+        const segment = Math.floor(roundCount / 3);
+        const easy = fullList.filter(s => mapData[s.answer.toLowerCase()].easy.includes(parseInt(s.src.match(/(\d+)\.png$/)[1])));
+        const normal = fullList.filter(s => mapData[s.answer.toLowerCase()].normal.includes(parseInt(s.src.match(/(\d+)\.png$/)[1])));
+        const hard = fullList.filter(s => mapData[s.answer.toLowerCase()].hard.includes(parseInt(s.src.match(/(\d+)\.png$/)[1])));
+
+        const selectRandom = (list, count) => {
+          const selected = [];
+          while (selected.length < count && list.length > 0) {
+            const index = Math.floor(Math.random() * list.length);
+            selected.push(list.splice(index, 1)[0]);
+          }
+          return selected;
+        };
+
+        availableScreenshots = [
+          ...selectRandom(easy, segment),
+          ...selectRandom(normal, segment),
+          ...selectRandom(hard, roundCount - segment * 2)
+        ];
       }
     }
 
