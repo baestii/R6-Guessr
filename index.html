@@ -80,7 +80,7 @@
   // List of maps and the number of screenshots for each map
   const mapData = {
     house: 3,  // Example: 3 screenshots for House
-    oregon: 3, // Example: 3 screenshots for Oregon
+    oregon: 3 // Example: 3 screenshots for Oregon
 
   };
 
@@ -95,14 +95,14 @@
 
   // Generate screenshots based on the map and the number of screenshots
   const screenshots = [];
-  for (const [mapName, count] of Object.entries(mapData)) {
-    for (let i = 1; i <= count; i++) {
-      screenshots.push({
-        src: `https://github.com/baestii/R6-Guessr/blob/main/{mapName}${i}.png`, // Path to the .png images
-        answer: mapName.charAt(0).toUpperCase() + mapName.slice(1) // E.g. "house" -> "House"
-      });
-    }
+for (const [mapName, count] of Object.entries(mapData)) {
+  for (let i = 1; i <= count; i++) {
+    screenshots.push({
+      src: `screenshots/${mapName}/${mapName}${i}.png`,
+      answer: mapName.charAt(0).toUpperCase() + mapName.slice(1)
+    });
   }
+}
 
   let current = {};
 
