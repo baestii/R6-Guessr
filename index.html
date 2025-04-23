@@ -98,7 +98,7 @@
   for (const [mapName, count] of Object.entries(mapData)) {
     for (let i = 1; i <= count; i++) {
       screenshots.push({
-        src: `screenshots/${mapName}${i}.png`, // Path to the .png images
+        src: `https://github.com/baestii/R6-Guessr/blob/main/{mapName}${i}.png`, // Path to the .png images
         answer: mapName.charAt(0).toUpperCase() + mapName.slice(1) // E.g. "house" -> "House"
       });
     }
