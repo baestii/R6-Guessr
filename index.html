@@ -71,6 +71,7 @@
     <select id="mapSelect">
       <option value="">Select a map</option>
       <option value="Oregon">Oregon</option>
+      <option value="House">House</option>
       <option value="Clubhouse">Clubhouse</option>
       <option value="Kafe Dostoyevsky">Kafe Dostoyevsky</option>
       <option value="Coastline">Coastline</option>
@@ -80,37 +81,47 @@
   </div>
 
   <script>
-    const screenshots = [
-      { src: "https://example.com/oregon1.jpg", answer: "Oregon" },
-      { src: "https://example.com/clubhouse1.jpg", answer: "Clubhouse" },
-      { src: "https://example.com/kafe1.jpg", answer: "Kafe Dostoyevsky" },
-      { src: "https://example.com/coastline1.jpg", answer: "Coastline" }
-    ];
+  // Liste aller Maps, die aktuell im Spiel sind
+  const mapData = {
+    house: 16,
+    oregon: 29
+  };
 
-    let current = {};
-
-    function startGame() {
-      document.getElementById('landing').style.display = 'none';
-      document.getElementById('game').style.display = 'flex';
-      loadScreenshot();
+  // Generiert aus den Dateinamen ein Array von Screenshots
+  const screenshots = [];
+  for (const [mapName, count] of Object.entries(mapData)) {
+    for (let i = 1; i <= count; i++) {
+      screenshots.push({
+        src: `${mapName}${i}.jpg`,
+        answer: mapName.charAt(0).toUpperCase() + mapName.slice(1) // z. B. "house" → "House"
+      });
     }
+  }
 
-    function loadScreenshot() {
-      current = screenshots[Math.floor(Math.random() * screenshots.length)];
-      document.getElementById('screenshot').src = current.src;
-      document.getElementById('result').textContent = '';
-      document.getElementById('mapSelect').value = '';
-    }
+  let current = {};
 
-    function checkAnswer() {
-      const guess = document.getElementById('mapSelect').value;
-      if (guess === current.answer) {
-        document.getElementById('result').textContent = "Correct! 🎯";
-      } else {
-        document.getElementById('result').textContent = `Wrong! The correct map was ${current.answer}.`;
-      }
-      setTimeout(loadScreenshot, 2000);
+  function startGame() {
+    document.getElementById('landing').style.display = 'none';
+    document.getElementById('game').style.display = 'flex';
+    loadScreenshot();
+  }
+
+  function loadScreenshot() {
+    current = screenshots[Math.floor(Math.random() * screenshots.length)];
+    document.getElementById('screenshot').src = current.src;
+    document.getElementById('result').textContent = '';
+    document.getElementById('mapSelect').value = '';
+  }
+
+  function checkAnswer() {
+    const guess = document.getElementById('mapSelect').value;
+    if (guess.toLowerCase() === current.answer.toLowerCase()) {
+      document.getElementById('result').textContent = "Correct! 🎯";
+    } else {
+      document.getElementById('result').textContent = `Wrong! The correct map was ${current.answer}.`;
     }
-  </script>
+    setTimeout(loadScreenshot, 2000);
+  }
+</script>
 </body>
 </html>
