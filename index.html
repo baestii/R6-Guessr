@@ -3,382 +3,268 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>R6 Map Guesser</title>
+  <title>R6 Guessr</title>
   <style>
-    body {
+    body, html {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #1e1e2f;
-      color: #f4f4f4;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      height: 100%;
+      width: 100%;
+      background-color: #111;
+      color: #fff;
+    }
+    .centered {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
-      overflow: hidden;
+      gap: 1rem;
     }
-    .container {
-      text-align: center;
-    }
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-    p {
-      font-size: 1.1rem;
-      margin-bottom: 2rem;
-    }
-    button {
-      padding: 0.75rem 1.5rem;
+    select, button {
+      padding: 0.5rem 1rem;
       font-size: 1rem;
-      background-color: #4e8cff;
-      color: white;
-      border: none;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-top: 1rem;
     }
-    button:hover {
-      background-color: #3a6edc;
+    .game-container {
+      text-align: center;
+      padding: 2rem;
     }
-    #game {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      height: 100%;
-      width: 100%;
-      position: relative;
-      z-index: 1;
-      transition: background-color 1s ease;
-      padding-bottom: 2rem;
-    }
-    #gameFeedback {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.3);
-      z-index: 0;
-      transition: background-color 1s ease;
-      display: none;
-    }
-    #progressBarContainer {
+    .progress-bar {
       width: 80%;
       height: 20px;
-      background-color: #444;
+      background: #555;
       border-radius: 10px;
       overflow: hidden;
-      margin-bottom: 1rem;
-    }    
-    #progressBar {
+      margin: 1rem auto;
+    }
+    .progress-bar-inner {
       height: 100%;
+      background: #0f0;
       width: 0%;
-      background-color: #4e8cff;
-      transition: width 0.5s ease;
+      transition: width 0.3s;
     }
-    #screenshot {
-      max-width: 80vw;
-      max-height: 50vh;
-      border-radius: 1rem;
-      margin-bottom: 1rem;
+    .feedback {
+      font-size: 1.5rem;
+      margin-top: 1rem;
+      transition: opacity 0.5s;
     }
-    img {
-      max-width: 80vw;
-      max-height: 50vh;
-      border-radius: 1rem;
-      margin-bottom: 1rem;
+    .screenshot {
+      max-width: 100%;
+      height: auto;
+      margin-top: 1rem;
+      border-radius: 8px;
     }
-    select {
-      padding: 0.5rem;
-      font-size: 1rem;
-      border-radius: 0.5rem;
-      border: none;
+    .fullscreen-feedback.correct {
+      background-color: rgba(0, 255, 0, 0.2);
     }
-    #endScreen {
-      display: none;
+    .fullscreen-feedback.wrong {
+      background-color: rgba(255, 0, 0, 0.2);
+    }
+    .fullscreen-feedback {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 10;
+      pointer-events: none;
+      transition: background-color 0.5s;
+    }
+    .end-screen {
       text-align: center;
+      padding: 2rem;
     }
   </style>
 </head>
 <body>
-  <div class="container" id="landing">
+  <div class="centered" id="landing">
     <h1>R6 Guessr</h1>
-    <p>Can you recognize Rainbow Six Siege maps from a single screenshot? Test your knowledge!</p>
-    <label for="roundsSelect">Rounds: </label>
-    <select id="roundsSelect">
-      <option value="5">5 Rounds</option>
-      <option value="10">10 Rounds</option>
-      <option value="15">15 Rounds</option>
-      <option value="20">20 Rounds</option>
-    </select>
-    <label for="difficultySelect">Difficulty: </label>
-    <select id="difficultySelect">
-      <option value="mixed">Gemischt</option>
-      <option value="easy">Easy</option>
-      <option value="normal">Normal</option>
-      <option value="hard">Hard</option>
-      <option value="progressive">Gestaffelt</option>
-    </select>
-    <button onclick="startGame()">Play</button>
+    <label>Rounds:
+      <select id="rounds">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+      </select>
+    </label>
+    <label>Difficulty:
+      <select id="difficulty">
+        <option value="mixed">Mixed</option>
+        <option value="progressive">Progressive</option>
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+    </label>
+    <button onclick="startGame()">Start Game</button>
   </div>
 
-  <div id="game">
-    <div id="gameFeedback"></div>
-    <p id="stats"></p>
-    <div id="progressBarContainer">
-      <div id="progressBar"></div>
-    <img id="screenshot" src="" alt="Map screenshot">
-    <select id="mapSelect">
-      <option value="">Select a map</option>
-    </select>
-    <button onclick="checkAnswer()">Submit</button>
-    <p id="result"></p>
+  <div id="game" style="display:none;">
+    <div class="game-container">
+      <div class="fullscreen-feedback" id="feedbackOverlay"></div>
+      <div class="progress-bar"><div class="progress-bar-inner" id="progressInner"></div></div>
+      <p>Round <span id="currentRound">1</span>/<span id="totalRounds">5</span> | Score: <span id="score">0</span></p>
+      <img src="" alt="Screenshot" id="screenshot" class="screenshot">
+      <select id="guessSelect"></select>
+      <button onclick="submitGuess()">Guess</button>
+      <div class="feedback" id="feedbackText"></div>
+    </div>
   </div>
 
-  <div id="endScreen">
-    <h2>Game Over! GOLD GOLD GOLD🎉</h2>
-    <p id="finalScore"></p>
-    <button onclick="startGame()">Play again</button>
-    <button onclick="goToLanding()">Back to start</button>
+  <div id="endScreen" style="display:none;">
+    <div class="end-screen">
+      <h2>Game Over!</h2>
+      <p>Your score: <span id="finalScore"></span></p>
+      <p id="motivationalMessage"></p>
+      <button onclick="restartGame()">Play Again</button>
+      <button onclick="goToLanding()">Back to Home</button>
+    </div>
   </div>
-  
+
   <script>
-    const mapData = {
-      house: { count: 16, easy: [1], normal: [2, 3, 7, 8, 9, 10, 12, 13], hard: [4, 5, 6, 11, 14, 15, 16] },
-      oregon: { count: 29, easy: [2, 8, 9, 10, 15, 21, 24, 27], normal: [1, 3, 6, 11, 16, 18, 19, 20, 23, 26, 28, 29], hard: [4, 5, 7, 12, 13, 14, 17, 22, 25] },
-      clubhouse: { count: 68, easy: [1, 3, 4, 6, 8, 12, 17, 18, 19, 22, 28, 30, 31, 38, 41, 42, 44, 55, 66], normal: [2, 5, 7, 10, 11, 15, 20, 23, 25, 27, 29, 32, 35, 36, 37, 39, 43, 47, 48, 50, 53, 56, 60, 62, 63, 67], hard: [9, 13, 14, 16, 21, 24, 26, 33, 34, 40, 45, 46, 49, 51, 52, 54, 57, 58, 59, 61, 64, 65, 68] },
-      consulate: { count: 77, easy: [12, 14, 17, 22, 23, 38, 42, 43, 45, 47, 48, 53, 60, 65, 72], normal: [1, 3, 5, 15, 16, 18, 19, 20, 21, 24, 25, 28, 32, 33, 34, 35, 36, 39, 41, 44, 46, 49, 51, 52, 55, 57, 58, 59, 64, 67, 69, 70, 71, 76, 77], hard: [2, 4, 6, 7, 8, 9, 10, 11, 13, 26, 27, 29, 30, 31, 37, 40, 50, 54, 56, 61, 62, 63, 66, 68, 73, 74, 75] }
+    const maps = {
+      house: 16,
+      oregon: 29,
+      clubhouse: 10,
+      consulate: 12
     };
 
-     const mapSelect = document.getElementById('mapSelect');
-    Object.keys(mapData).forEach(mapName => {
-      const option = document.createElement('option');
-      option.value = mapName.charAt(0).toUpperCase() + mapName.slice(1);
-      option.textContent = option.value;
-      mapSelect.appendChild(option);
-    });
+    const allScreenshots = [];
+    const difficultyRatings = {
+      house1: 'easy', house2: 'easy', house3: 'easy', house4: 'medium', house5: 'medium', house6: 'medium', house7: 'medium', house8: 'medium',
+      house9: 'medium', house10: 'medium', house11: 'hard', house12: 'hard', house13: 'hard', house14: 'hard', house15: 'hard', house16: 'hard',
+      oregon1: 'easy', oregon2: 'easy', oregon3: 'easy', oregon4: 'medium', oregon5: 'medium', oregon6: 'medium', oregon7: 'medium', oregon8: 'medium',
+      oregon9: 'medium', oregon10: 'medium', oregon11: 'hard', oregon12: 'hard', oregon13: 'hard', oregon14: 'hard', oregon15: 'hard', oregon16: 'hard',
+      oregon17: 'hard', oregon18: 'hard', oregon19: 'hard', oregon20: 'hard', oregon21: 'hard', oregon22: 'hard', oregon23: 'hard', oregon24: 'hard',
+      oregon25: 'hard', oregon26: 'hard', oregon27: 'hard', oregon28: 'hard', oregon29: 'hard',
+      clubhouse1: 'easy', clubhouse2: 'easy', clubhouse3: 'easy', clubhouse4: 'medium', clubhouse5: 'medium', clubhouse6: 'medium', clubhouse7: 'medium',
+      clubhouse8: 'medium', clubhouse9: 'medium', clubhouse10: 'hard',
+      consulate1: 'easy', consulate2: 'easy', consulate3: 'medium', consulate4: 'medium', consulate5: 'medium', consulate6: 'medium', consulate7: 'hard',
+      consulate8: 'hard', consulate9: 'hard', consulate10: 'hard', consulate11: 'hard', consulate12: 'hard'
+    };
 
-    let roundCount = 5;
-    let currentRound = 0;
-    let score = 0;
-    let current = {};
-    let usedScreenshots = [];
-    let difficulty = 'mixed';
-    let availableScreenshots = [];
+    for (let [map, count] of Object.entries(maps)) {
+      for (let i = 1; i <= count; i++) {
+        const name = `${map}${i}`;
+        allScreenshots.push(name);
+      }
+    }
 
-   
-    });
+    let gameState = {
+      rounds: 5,
+      difficulty: 'mixed',
+      used: [],
+      score: 0,
+      current: 0,
+      screenshots: [],
+    };
 
     function startGame() {
-      alert("StartGame aufgerufen!");
-      console.log("Start Game clicked");
-      const roundSelect = document.getElementById('roundsSelect');
-      roundCount = parseInt(roundSelect.value, 10) || 5;
-      difficulty = document.getElementById('difficultySelect').value;
-      usedScreenshots = [];
-      score = 0;
-      currentRound = 0;
+      gameState.rounds = parseInt(document.getElementById('rounds').value);
+      gameState.difficulty = document.getElementById('difficulty').value;
+      gameState.used = [];
+      gameState.score = 0;
+      gameState.current = 0;
+      gameState.screenshots = getFilteredScreenshots(gameState.difficulty, gameState.rounds);
 
-        generateAvailableScreenshots();
-
+      document.getElementById('totalRounds').textContent = gameState.rounds;
       document.getElementById('landing').style.display = 'none';
-      document.getElementById('game').style.display = 'flex';
-      document.getElementById('endScreen').style.display = 'none';
-
-        updateStats();
-        loadScreenshot();
+      document.getElementById('game').style.display = 'block';
+      showNextRound();
     }
-    
+
+    function getFilteredScreenshots(difficulty, count) {
+      let pool = [...allScreenshots];
+
+      if (difficulty === 'progressive') {
+        const easyCount = Math.floor(count / 3);
+        const mediumCount = Math.floor(count / 3);
+        const hardCount = count - easyCount - mediumCount;
+
+        const easyScreenshots = pool.filter(s => difficultyRatings[s] === 'easy').slice(0, easyCount);
+        const mediumScreenshots = pool.filter(s => difficultyRatings[s] === 'medium').slice(0, mediumCount);
+        const hardScreenshots = pool.filter(s => difficultyRatings[s] === 'hard').slice(0, hardCount);
+
+        pool = [...easyScreenshots, ...mediumScreenshots, ...hardScreenshots];
+      } else if (difficulty !== 'mixed') {
+        pool = pool.filter(s => difficultyRatings[s] === difficulty);
+      }
+
+      return shuffle(pool).slice(0, count);
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function showNextRound() {
+      if (gameState.current >= gameState.rounds) return showEndScreen();
+
+      const currentShot = gameState.screenshots[gameState.current];
+      document.getElementById('currentRound').textContent = gameState.current + 1;
+      document.getElementById('screenshot').src = `screenshots/${currentShot}.jpg`;
+
+      const guessSelect = document.getElementById('guessSelect');
+      guessSelect.innerHTML = '';
+      Object.keys(maps).forEach(map => {
+        const opt = document.createElement('option');
+        opt.value = map;
+        opt.textContent = map.charAt(0).toUpperCase() + map.slice(1);
+        guessSelect.appendChild(opt);
+      });
+    }
+
+    function submitGuess() {
+      const selected = document.getElementById('guessSelect').value;
+      const currentShot = gameState.screenshots[gameState.current];
+      const actual = currentShot.match(/^[a-z]+/)[0];
+      const correct = selected === actual;
+      const overlay = document.getElementById('feedbackOverlay');
+      const feedback = document.getElementById('feedbackText');
+
+      overlay.className = 'fullscreen-feedback ' + (correct ? 'correct' : 'wrong');
+      feedback.textContent = correct ? 'Correct!' : `Wrong. The map was ${actual}`;
+      if (correct) gameState.score++;
+      document.getElementById('score').textContent = gameState.score;
+      document.getElementById('progressInner').style.width = ((gameState.current + 1) / gameState.rounds * 100) + '%';
+
+      setTimeout(() => {
+        overlay.className = 'fullscreen-feedback';
+        feedback.textContent = '';
+        gameState.current++;
+        showNextRound();
+      }, 1000);
+    }
+
+    function showEndScreen() {
+      document.getElementById('game').style.display = 'none';
+      document.getElementById('endScreen').style.display = 'block';
+      document.getElementById('finalScore').textContent = gameState.score;
+      const motivationalMessage = gameState.score >= gameState.rounds / 2 ? 'Great job!' : 'Better luck next time!';
+      document.getElementById('motivationalMessage').textContent = motivationalMessage;
+    }
+
+    function restartGame() {
+      gameState = {
+        rounds: 5,
+        difficulty: 'mixed',
+        used: [],
+        score: 0,
+        current: 0,
+        screenshots: [],
+      };
+      document.getElementById('endScreen').style.display = 'none';
+      document.getElementById('landing').style.display = 'block';
+    }
+
     function goToLanding() {
       document.getElementById('endScreen').style.display = 'none';
       document.getElementById('landing').style.display = 'block';
-      document.getElementById('game').style.display = 'none';
-      score = 0;
-      currentRound = 0;
-      usedScreenshots = [];
-      
     }
-
-     // Zufällige Auswahl von Screenshots
-    function selectRandom(list, count) {
-      const selected = [];
-      while (selected.length < count && list.length > 0) {
-        const index = Math.floor(Math.random() * list.length);
-          selected.push(list.splice(index, 1)[0]);
-        }
-      return selected;
-      }
-
-    
-    function generateAvailableScreenshots() {
-      availableScreenshots = [];
-
-        const mapNames = Object.keys(mapData);
-        const isProgressive = difficulty === 'progressive';
-
-      for (const mapName of mapNames) {
-        const data = mapData[mapName];
-        let difficultySequence = [];
-
-    // Standard-Difficulty-Auswahl
-      if (difficulty === 'easy') difficultySequence = data.easy;
-        else if (difficulty === 'normal') difficultySequence = data.normal;
-        else if (difficulty === 'hard') difficultySequence = data.hard;
-        else if (difficulty === 'progressive') {
-      // Berechnung der Verteilung für "gestaffelt"
-          const totalRounds = roundCount;
-          const easyCount = Math.floor(totalRounds / 3);
-          const normalCount = Math.floor(totalRounds / 3);
-          const hardCount = totalRounds - easyCount - normalCount; // Restliche Runden für "hard"
-
-        const easy = data.easy.slice(0, easyCount);
-        const normal = data.normal.slice(0, normalCount);
-        const hard = data.hard.slice(0, hardCount);
-
-      difficultySequence = [...easy, ...normal, ...hard];
-        } else {
-        difficultySequence = Array.from({ length: data.count }, (_, i) => i + 1);
-      }
-
-    // Screenshots hinzufügen
-      difficultySequence.forEach(i => {
-        availableScreenshots.push({
-          src: `screenshots/${mapName}/${mapName}${i}.png`,
-          answer: mapName.charAt(0).toUpperCase() + mapName.slice(1)
-      });
-    });
-  }
-
-      // Zufällige Auswahl für "gestaffelt"
-      if (difficulty === 'progressive') {
-        const easy = availableScreenshots.filter(s => mapData[s.answer.toLowerCase()].easy.includes(parseInt(s.src.match(/(\d+)\.png$/)[1])));
-        const normal = availableScreenshots.filter(s => mapData[s.answer.toLowerCase()].normal.includes(parseInt(s.src.match(/(\d+)\.png$/)[1])));
-        const hard = availableScreenshots.filter(s => mapData[s.answer.toLowerCase()].hard.includes(parseInt(s.src.match(/(\d+)\.png$/)[1])));
-
-    // Für "gestaffelt" die Runden zufällig aus den Kategorien auswählen
-      availableScreenshots = [
-        ...selectRandom(easy, Math.floor(roundCount / 3)),
-        ...selectRandom(normal, Math.floor(roundCount / 3)),
-        ...selectRandom(hard, roundCount - Math.floor(roundCount / 3) * 2)
-    ];
-  }
-}
-
-      if (difficulty === 'progressive') {
-        const ordered = [];
-        const fullList = [...availableScreenshots];
-        const total = fullList.length;
-        const segment = Math.floor(roundCount / 3);
-        const easy = fullList.filter(s => mapData[s.answer.toLowerCase()].easy.includes(parseInt(s.src.match(/(\d+)\.png$/)[1])));
-        const normal = fullList.filter(s => mapData[s.answer.toLowerCase()].normal.includes(parseInt(s.src.match(/(\d+)\.png$/)[1])));
-        const hard = fullList.filter(s => mapData[s.answer.toLowerCase()].hard.includes(parseInt(s.src.match(/(\d+)\.png$/)[1])));
-
-          const selectRandom = (list, count) => {
-            const selected = [];
-            while (selected.length < count && list.length > 0) {
-              const index = Math.floor(Math.random() * list.length);
-                selected.push(list.splice(index, 1)[0]);
-          }
-            return selected;
-        };
-
-        availableScreenshots = [
-          ...selectRandom(easy, segment),
-          ...selectRandom(normal, segment),
-          ...selectRandom(hard, roundCount - segment * 2)
-        ];
-      
-  
-
-   
-    
-    function loadScreenshot() {
-      if (currentRound >= roundCount) {
-        endGame();
-        return;
-      }
-
-      if (difficulty === 'progressive') {
-      if (currentRound >= availableScreenshots.length) {
-        endGame();
-        return;
-       }
-      current = availableScreenshots[currentRound];
-    } else {
-      let unused = availableScreenshots.filter(s => !usedScreenshots.includes(s.src));
-      if (unused.length === 0) {
-        endGame();
-        return;
-     }
-      current = unused[Math.floor(Math.random() * unused.length)];
-      usedScreenshots.push(current.src);
-    }
-      currentRound++;
-
-      const img = document.getElementById('screenshot');
-      img.style.opacity = 0;
-      img.onload = () => {
-        img.style.opacity = 1;
-      };
-
-      img.src = current.src;
-      document.getElementById('result').textContent = '';
-      document.getElementById('mapSelect').value = '';
-      updateStats();
-    }
-
-    function updateStats() {
-      if (!document.getElementById('roundInfo')) {
-        const stats = document.getElementById('stats');
-        stats.innerHTML = `<p id="roundInfo"></p><p id="scoreInfo"></p>`;
-      }
-      document.getElementById('roundInfo').textContent = `Round ${currentRound} of ${roundCount}`;
-      document.getElementById('scoreInfo').textContent = `Points: ${score}`;
-
-      const progressBar = document.getElementById('progressBar');
-      if (progressBar) {
-        const percent = (currentRound / roundCount) * 100;
-        progressBar.style.width = `${percent}%`;
-      }
-    }
-    function checkAnswer() {
-      const guess = document.getElementById('mapSelect').value;
-      if (!guess) return;
-
-      const result = document.getElementById('result');
-      const imgContainer = document.getElementById('game');
-      const feedback = document.getElementById('gameFeedback');
-      feedback.style.display = 'block';
-
-      if (guess.toLowerCase() === current.answer.toLowerCase()) {
-        score++;
-        result.textContent = "Correct! 🎯";
-        result.style.color = 'green';
-        imgContainer.style.backgroundColor = 'rgba(0, 255, 0, 0.2)';
-      } else {
-        result.textContent = `Wrong! It was ${current.answer}.`;
-        result.style.color = 'red';
-        imgContainer.style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
-      }
-
-      updateStats();
-
-      setTimeout(() => {
-        feedback.style.display = 'none';
-        imgContainer.style.backgroundColor = '';
-        loadScreenshot();
-      }, 1500);
-    }
-
-    function endGame() {
-      document.getElementById('game').style.display = 'none';
-      document.getElementById('endScreen').style.display = 'block';
-      document.getElementById('finalScore').textContent = `You scored ${score} out of ${roundCount}!`;
-    }
-        </script>
   </script>
 </body>
 </html>
