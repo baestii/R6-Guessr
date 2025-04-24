@@ -177,26 +177,32 @@
       score = 0;
       currentRound = 0;
       usedScreenshots = [];
+      
     }
+document.addEventListener('DOMContentLoaded', function() {
+  function startGame() {
+    console.log("Start Game clicked"); // Füge dies hinzu
+    const roundSelect = document.getElementById('roundsSelect');
+    roundCount = parseInt(roundSelect.value, 10) || 5;
+    difficulty = document.getElementById('difficultySelect').value;
+    usedScreenshots = [];
+    score = 0;
+    currentRound = 0;
 
-    function startGame() {
-       console.log("Start Game clicked"); // Füge dies hinzu
-      const roundSelect = document.getElementById('roundsSelect');
-      roundCount = parseInt(roundSelect.value, 10) || 5;
-      difficulty = document.getElementById('difficultySelect').value;
-      usedScreenshots = [];
-      score = 0;
-      currentRound = 0;
+    generateAvailableScreenshots();
 
-      generateAvailableScreenshots();
+    document.getElementById('landing').style.display = 'none';
+    document.getElementById('game').style.display = 'flex';
+    document.getElementById('endScreen').style.display = 'none';
 
-      document.getElementById('landing').style.display = 'none';
-      document.getElementById('game').style.display = 'flex';
-      document.getElementById('endScreen').style.display = 'none';
-
-      updateStats();
-      loadScreenshot();
-    }
+    updateStats();
+    loadScreenshot();
+  }
+  
+  // Attach startGame to the play button's onclick event
+  document.querySelector('button[onclick="startGame()"]').addEventListener('click', startGame);
+  
+});
      // Zufällige Auswahl von Screenshots
     function selectRandom(list, count) {
       const selected = [];
@@ -337,8 +343,8 @@
       if (progressBar) {
         const percent = (currentRound / roundCount) * 100;
         progressBar.style.width = `${percent}%`;
+      }
     }
-
     function checkAnswer() {
       const guess = document.getElementById('mapSelect').value;
       if (!guess) return;
