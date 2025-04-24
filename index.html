@@ -72,7 +72,7 @@
       border-radius: 10px;
       overflow: hidden;
       margin-bottom: 1rem;
-    }      </div>
+    }    
     #progressBar {
       height: 100%;
       width: 0%;
@@ -134,7 +134,6 @@
     <select id="mapSelect">
       <option value="">Select a map</option>
     </select>
-    <button id="startGame">Play</button> 
     <button onclick="checkAnswer()">Submit</button>
     <p id="result"></p>
   </div>
@@ -170,11 +169,11 @@
     let difficulty = 'mixed';
     let availableScreenshots = [];
 
-    document.addEventListener('DOMContentLoaded', function() {
-  // Hier können andere Dinge passieren, aber startGame ist außerhalb
+   
     });
 
     function startGame() {
+      alert("StartGame aufgerufen!");
       console.log("Start Game clicked");
       const roundSelect = document.getElementById('roundsSelect');
       roundCount = parseInt(roundSelect.value, 10) || 5;
