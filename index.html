@@ -179,6 +179,7 @@
     }
 
     function startGame() {
+       console.log("Start Game clicked"); // Füge dies hinzu
       const roundSelect = document.getElementById('roundsSelect');
       roundCount = parseInt(roundSelect.value, 10) || 5;
       difficulty = document.getElementById('difficultySelect').value;
