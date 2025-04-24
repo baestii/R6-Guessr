@@ -171,25 +171,27 @@
     let availableScreenshots = [];
 
     document.addEventListener('DOMContentLoaded', function() {
-  function startGame() {
-    console.log("Start Game clicked"); // Füge dies hinzu
-    const roundSelect = document.getElementById('roundsSelect');
-    roundCount = parseInt(roundSelect.value, 10) || 5;
-    difficulty = document.getElementById('difficultySelect').value;
-    usedScreenshots = [];
-    score = 0;
-    currentRound = 0;
+  // Hier können andere Dinge passieren, aber startGame ist außerhalb
+    });
 
-    generateAvailableScreenshots();
+    function startGame() {
+      console.log("Start Game clicked");
+      const roundSelect = document.getElementById('roundsSelect');
+      roundCount = parseInt(roundSelect.value, 10) || 5;
+      difficulty = document.getElementById('difficultySelect').value;
+      usedScreenshots = [];
+      score = 0;
+      currentRound = 0;
 
-    document.getElementById('landing').style.display = 'none';
-    document.getElementById('game').style.display = 'flex';
-    document.getElementById('endScreen').style.display = 'none';
+        generateAvailableScreenshots();
 
-    updateStats();
-    loadScreenshot();
-  }
-});
+      document.getElementById('landing').style.display = 'none';
+      document.getElementById('game').style.display = 'flex';
+      document.getElementById('endScreen').style.display = 'none';
+
+        updateStats();
+        loadScreenshot();
+    }
     
     function goToLanding() {
       document.getElementById('endScreen').style.display = 'none';
