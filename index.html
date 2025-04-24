@@ -23,6 +23,7 @@
     h1 {
       font-size: 2.5rem;
       margin-bottom: 1rem;
+      color: #4e8cff;
     }
     p {
       font-size: 1.1rem;
@@ -96,10 +97,30 @@
       font-size: 1rem;
       border-radius: 0.5rem;
       border: none;
+      background-color: #333;
+      color: white;
+      margin-top: 1rem;
     }
     #endScreen {
       display: none;
       text-align: center;
+      color: #4e8cff;
+    }
+    #endScreen h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    #endScreen button {
+      padding: 0.75rem 1.5rem;
+      background-color: #4e8cff;
+      color: white;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 1rem;
+    }
+    #endScreen button:hover {
+      background-color: #3a6edc;
     }
   </style>
 </head>
@@ -116,11 +137,11 @@
     </select>
     <label for="difficultySelect">Difficulty: </label>
     <select id="difficultySelect">
-      <option value="mixed">Gemischt</option>
+      <option value="mixed">Mixed</option>
       <option value="easy">Easy</option>
       <option value="normal">Normal</option>
       <option value="hard">Hard</option>
-      <option value="progressive">Gestaffelt</option>
+      <option value="progressive">Progressive</option>
     </select>
     <button onclick="startGame()">Play</button>
   </div>
@@ -130,6 +151,7 @@
     <p id="stats"></p>
     <div id="progressBarContainer">
       <div id="progressBar"></div>
+    </div>
     <img id="screenshot" src="" alt="Map screenshot">
     <select id="mapSelect">
       <option value="">Select a map</option>
@@ -139,7 +161,7 @@
   </div>
 
   <div id="endScreen">
-    <h2>Game Over! GOLD GOLD GOLD🎉</h2>
+    <h2>Game Over! 🎉</h2>
     <p id="finalScore"></p>
     <button onclick="startGame()">Play again</button>
     <button onclick="goToLanding()">Back to start</button>
