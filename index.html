@@ -600,13 +600,11 @@ Object.keys(mapData).forEach(mapName => {
         score++;
         result.textContent = "Correct! 🎯";
         result.style.color = 'green';
-        imgContainer.style.boxShadow = (guess.toLowerCase() === current.answer.toLowerCase())
-        ? '0 0 25px 10px rgba(0, 255, 0, 0.5)'
-      } else {
+        imgContainer.style.boxShadow = '0 0 25px 10px rgba(0, 255, 0, 0.5)';
+    } else {
         result.textContent = `Wrong! It was ${current.answer}.`;
         result.style.color = 'red';
-        imgContainer.style.boxShadow = (guess.toLowerCase() === current.answer.toLowerCase())
-         : '0 0 25px 10px rgba(255, 0, 0, 0.5)'; 
+        imgContainer.style.boxShadow = '0 0 25px 10px rgba(255, 0, 0, 0.5)';
       }
 
       updateStats();
