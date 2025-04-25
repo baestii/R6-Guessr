@@ -153,6 +153,26 @@
       house: { count: 16, easy: [1], normal: [2, 3, 7, 8, 9, 10, 12, 13], hard: [4, 5, 6, 11, 14, 15, 16] },
       oregon: { count: 29, easy: [2, 8, 9, 10, 15, 21, 24, 27], normal: [1, 3, 6, 11, 16, 18, 19, 20, 23, 26, 28, 29], hard: [4, 5, 7, 12, 13, 14, 17, 22, 25] },
       clubhouse: { count: 68, easy: [1, 3, 4, 6, 8, 12, 17, 18, 19, 22, 28, 30, 31, 38, 41, 42, 44, 55, 66], normal: [2, 5, 7, 10, 11, 15, 20, 23, 25, 27, 29, 32, 35, 36, 37, 39, 43, 47, 48, 50, 53, 56, 60, 62, 63, 67], hard: [9, 13, 14, 16, 21, 24, 26, 33, 34, 40, 45, 46, 49, 51, 52, 54, 57, 58, 59, 61, 64, 65, 68] },
+      plane: { count: 0, easy: [], normal: [], hard: [] },
+      bank: { count: 0, easy: [], normal: [], hard: [] },
+      kanal: { count: 0, easy: [], normal: [], hard: [] },
+      chalet: { count: 0, easy: [], normal: [], hard: [] },
+      cafe: { count: 0, easy: [], normal: [], hard: [] },
+      yacht: { count: 0, easy: [], normal: [], hard: [] },
+      border: { count: 0, easy: [], normal: [], hard: [] },
+      favela: { count: 0, easy: [], normal: [], hard: [] },
+      skyscraper: { count: 0, easy: [], normal: [], hard: [] },
+      coastline: { count: 0, easy: [], normal: [], hard: [] },
+      themepark: { count: 0, easy: [], normal: [], hard: [] },
+      tower: { count: 0, easy: [], normal: [], hard: [] },
+      villa: { count: 0, easy: [], normal: [], hard: [] },
+      fortress: { count: 0, easy: [], normal: [], hard: [] },
+      outback: { count: 0, easy: [], normal: [], hard: [] },
+      emeraldplains: { count: 0, easy: [], normal: [], hard: [] },
+      stadiumbravo: { count: 0, easy: [], normal: [], hard: [] },
+      nighthavenlabs: { count: 0, easy: [], normal: [], hard: [] },
+      lair: { count: 0, easy: [], normal: [], hard: [] },
+      stadium2020: { count: 0, easy: [], normal: [], hard: [] },
       consulate: { count: 77, easy: [12, 14, 17, 22, 23, 38, 42, 43, 45, 47, 48, 53, 60, 65, 72], normal: [1, 3, 5, 15, 16, 18, 19, 20, 21, 24, 25, 28, 32, 33, 34, 35, 36, 39, 41, 44, 46, 49, 51, 52, 55, 57, 58, 59, 64, 67, 69, 70, 71, 76, 77], hard: [2, 4, 6, 7, 8, 9, 10, 11, 13, 26, 27, 29, 30, 31, 37, 40, 50, 54, 56, 61, 62, 63, 66, 68, 73, 74, 75] }
     };
 
@@ -349,8 +369,8 @@
     }
 
       function endGame() {
-        document.getElementById('game').classList.add('hidden');
-        document.getElementById('endScreen').classList.remove('hidden');
+        document.getElementById('game').style.display = 'none';
+        document.getElementById('endScreen').style.display = 'block';
         document.getElementById('finalScore').textContent = `You scored ${score} out of ${roundCount}!`;
     }
   </script>
