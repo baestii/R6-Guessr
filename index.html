@@ -91,19 +91,22 @@
     #progressBarContainer {
       width: 80%;
       height: 20px;
+      background-color: #333; 
       border-radius: 10px;
       overflow: hidden;
       margin-bottom: 1rem;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
     #progressBar {
       height: 100%;
       width: 0%;
+      background-color: #4e8cff;
       transition: width 0.5s ease;
     }
     #screenshot {
       width: 100%;
       height: auto;
-      max-height: 60vh;
+      max-height: 45vh;
       border-radius: 1rem;
       margin-bottom: 1rem;
       object-fit: contain;
@@ -151,9 +154,8 @@
     #endScreen {
   display: none;
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  inset: 0;
+  margin: auto;
   background: linear-gradient(145deg, #2a2a3d, #1c1c2c);
   color: #f4f4f4;
   padding: 2rem;
@@ -161,11 +163,10 @@
   z-index: 9999;
   text-align: center;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-  animation: fadeIn 0.8s ease-in-out;
-  min-width: 300px;
   animation: epicEndScreen 0.8s ease forwards;
+  height: max-content;
+  width: fit-content;
 }
-
 #endScreen h2 {
   font-size: 2rem;
   margin-bottom: 1rem;
@@ -250,6 +251,9 @@
   </div>
 
   <div id="game">
+    <div style="position: absolute; top: 20px; right: 20px;">
+  <button id="soundToggleButtonGame" style="background: none; border: none; cursor: pointer; font-size: 1.5rem;">🔊</button>
+</div>
   <div id="gameFeedback"></div>
   <p id="stats"></p>
   
@@ -268,10 +272,13 @@
     <button onclick="checkAnswer()">Submit</button>
   </div>
 
-  <p id="result"></p>
+  <p id="result" style="font-size: 1.4rem; font-weight: bold; margin-top: 1.5rem;"></p>
 </div>
 
   <div id="endScreen">
+    <div style="position: absolute; top: 20px; right: 20px;">
+  <button id="soundToggleButtonEnd" style="background: none; border: none; cursor: pointer; font-size: 1.5rem;">🔊</button>
+</div>
     <h2 class="text-3xl font-bold mb-4">🎉 Game Over! GOLD GOLD GOLD 🎉</h2>
     <p id="finalScore"></p>
     <button onclick="startGame()">Play again</button>
@@ -593,11 +600,13 @@ Object.keys(mapData).forEach(mapName => {
         score++;
         result.textContent = "Correct! 🎯";
         result.style.color = 'green';
-        imgContainer.style.backgroundColor = 'rgba(0, 255, 0, 0.2)';
+        imgContainer.style.boxShadow = (guess.toLowerCase() === current.answer.toLowerCase())
+        ? '0 0 25px 10px rgba(0, 255, 0, 0.5)'
       } else {
         result.textContent = `Wrong! It was ${current.answer}.`;
         result.style.color = 'red';
-        imgContainer.style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
+        imgContainer.style.boxShadow = (guess.toLowerCase() === current.answer.toLowerCase())
+         : '0 0 25px 10px rgba(255, 0, 0, 0.5)'; 
       }
 
       updateStats();
@@ -707,12 +716,26 @@ Object.keys(mapData).forEach(mapName => {
      
     }
       window.addEventListener('DOMContentLoaded', () => {
+        
   const hoverSound = document.getElementById('hoverSound');
   const clickSound = document.getElementById('clickSound');
   const soundToggleButton = document.getElementById('soundToggleButton');
+  const allSoundButtons = [
+      document.getElementById('soundToggleButton'),
+      document.getElementById('soundToggleButtonGame'),
+      document.getElementById('soundToggleButtonEnd')
+          ].filter(Boolean);
+
+        allSoundButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            allSoundButtons.forEach(b => b.textContent = soundEnabled ? "🔊" : "🔇");
+  });
+});
 
   const buttons = document.querySelectorAll('button');
   const options = document.querySelectorAll('option');
+        
 
   if (soundToggleButton) {
     soundToggleButton.addEventListener('click', () => {
@@ -723,13 +746,13 @@ Object.keys(mapData).forEach(mapName => {
 
   // Hover-Sound nur bei Options
   options.forEach(option => {
-    option.addEventListener('mouseover', () => {
-      if (hoverSound && soundEnabled) {
-        hoverSound.currentTime = 0;
-        hoverSound.play();
-      }
-    });
+  option.addEventListener('mouseenter', () => {
+    if (hoverSound && soundEnabled) {
+      hoverSound.currentTime = 0;
+      hoverSound.play();
+    }
   });
+});
 
   // Click-Sound nur bei Buttons
   buttons.forEach(button => {
