@@ -88,6 +88,12 @@
       transition: background-color 1s ease;
       display: none;
     }
+    #screenshot.glow-correct {
+      box-shadow: 0 0 25px 10px rgba(0, 255, 0, 0.5);
+    }
+    #screenshot.glow-wrong {
+      box-shadow: 0 0 25px 10px rgba(255, 0, 0, 0.5);
+    }
     #progressBarContainer {
       width: 80%;
       height: 20px;
@@ -194,7 +200,31 @@
   background-color: #3a6edc;
   transform: scale(1.05);
 }
+  #result {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.8rem 1.2rem;
+  background: rgba(0, 0, 0, 0.6); /* leicht schwarzer Hintergrund */
+  border-radius: 0.8rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
 
+/* Spezielle Styles für "Correct" */
+#result.correct {
+  background: rgba(0, 128, 0, 0.7); /* dunkles Grün */
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
+}
+
+/* Spezielle Styles für "Wrong" */
+#result.wrong {
+  background: rgba(128, 0, 0, 0.7); /* dunkles Rot */
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+}
+
+  
 @keyframes fadeIn {
   from { opacity: 0; transform: translate(-50%, -55%); }
   to { opacity: 1; transform: translate(-50%, -50%); }
@@ -357,6 +387,8 @@ const failureSounds = [
     
    // Sound-Volume-Settings
   const soundVolumes = {
+
+  "sounds/click.mp3": 0.4,
   // Victory Sounds
   "sounds/victory1.mp3": 0.2,
   "sounds/victory2.mp3": 0.2,
@@ -586,7 +618,15 @@ Object.keys(mapData).forEach(mapName => {
         const percent = (currentRound / roundCount) * 100;
         progressBar.style.width = `${percent}%`;
       }
-    }
+      setTimeout(() => {
+      feedback.style.display = 'none';
+      img.classList.remove('glow-correct', 'glow-wrong');
+      resultBox.classList.remove('correct', 'wrong');  
+        loadScreenshot();
+      }, 1500);
+    
+
+    
     function checkAnswer() {
       const guess = document.getElementById('mapSelect').value;
       if (!guess) return;
@@ -596,16 +636,21 @@ Object.keys(mapData).forEach(mapName => {
       const feedback = document.getElementById('gameFeedback');
       feedback.style.display = 'block';
 
-      if (guess.toLowerCase() === current.answer.toLowerCase()) {
-        score++;
-        result.textContent = "Correct! 🎯";
-        result.style.color = 'green';
-        imgContainer.style.boxShadow = '0 0 25px 10px rgba(0, 255, 0, 0.5)';
-    } else {
-        result.textContent = `Wrong! It was ${current.answer}.`;
-        result.style.color = 'red';
-        imgContainer.style.boxShadow = '0 0 25px 10px rgba(255, 0, 0, 0.5)';
-      }
+      const img = document.getElementById('screenshot');
+
+const resultBox = document.getElementById('result');
+resultBox.classList.remove('correct', 'wrong'); // immer zuerst alte Klassen wegnehmen
+
+if (guess.toLowerCase() === current.answer.toLowerCase()) {
+  score++;
+  resultBox.textContent = "Correct! 🎯";
+  resultBox.classList.add('correct');
+  img.classList.add('glow-correct');
+} else {
+  resultBox.textContent = `Wrong! It was ${current.answer}.`;
+  resultBox.classList.add('wrong');
+  img.classList.add('glow-wrong');
+}
 
       updateStats();
 
@@ -732,6 +777,15 @@ Object.keys(mapData).forEach(mapName => {
 
   const buttons = document.querySelectorAll('button');
   const options = document.querySelectorAll('option');
+  const selects = document.querySelectorAll('select');
+selects.forEach(select => {
+  select.addEventListener('mouseover', () => {
+    if (hoverSound && soundEnabled) {
+      hoverSound.currentTime = 0;
+      hoverSound.play();
+    }
+  });
+});
         
 
   // Hover-Sound nur bei Options
