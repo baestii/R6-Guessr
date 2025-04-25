@@ -60,7 +60,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.3);
+      /*background-color: rgba(0, 0, 0, 0.3);*/
       z-index: 0;
       transition: background-color 1s ease;
       display: none;
@@ -98,16 +98,16 @@
       border: none;
     }
     #endScreen {
-      display: block;
+      display: none;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      /*background-color: rgba(0, 0, 0, 0.7); /* Sicherstellen, dass der Hintergrund sichtbar ist */
+      background-color: rgba(0, 0, 0, 0.7); /* Sicherstellen, dass der Hintergrund sichtbar ist */
       color: white;
       padding: 20px;
       border-radius: 10px;
-      /*z-index: 9999; */
+      z-index: 9999;
       text-align: center;
     }
   </style>
@@ -147,7 +147,7 @@
     <button onclick="checkAnswer()">Submit</button>
     <p id="result"></p>
 
-  <div id="endScreen" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; padding: 20px; border-radius: 10px; z-index: 0; text-align: center;">
+  <div id="endScreen">
   <h2 class="text-3xl font-bold mb-4">Game Over! GOLD GOLD GOLD🎉</h2>
   <p id="finalScore"></p>
   <button onclick="startGame()">Play again</button>
