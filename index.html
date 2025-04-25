@@ -107,9 +107,9 @@
       width: 100%;
       height: auto;
       max-height: 45vh;
-      border-radius: 1rem;
+      border-radius: 0.5rem;
       margin-bottom: 1rem;
-      object-fit: contain;
+      object-fit: cover;
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
     }
     #screenshotContainer {
@@ -228,7 +228,7 @@
 <body>
   <div class="container" id="landing">
     <h1>R6 Guessr</h1>
-    <button id="soundToggleButton" style="position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer;">
+    <button id="soundToggleLanding" style="position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer;">
   🔊
     </button>
     <p>Can you recognize Rainbow Six Siege maps from a single screenshot? Test your knowledge!</p>
@@ -717,12 +717,11 @@ Object.keys(mapData).forEach(mapName => {
         
   const hoverSound = document.getElementById('hoverSound');
   const clickSound = document.getElementById('clickSound');
-  const soundToggleButton = document.getElementById('soundToggleButton');
   const allSoundButtons = [
-      document.getElementById('soundToggleButton'),
+      document.getElementById('soundToggleLanding'),
       document.getElementById('soundToggleButtonGame'),
       document.getElementById('soundToggleButtonEnd')
-          ].filter(Boolean);
+      ].filter(Boolean);
 
         allSoundButtons.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -734,13 +733,6 @@ Object.keys(mapData).forEach(mapName => {
   const buttons = document.querySelectorAll('button');
   const options = document.querySelectorAll('option');
         
-
-  if (soundToggleButton) {
-    soundToggleButton.addEventListener('click', () => {
-      soundEnabled = !soundEnabled;
-      soundToggleButton.textContent = soundEnabled ? "🔊" : "🔇";
-    });
-  }
 
   // Hover-Sound nur bei Options
   options.forEach(option => {
