@@ -293,6 +293,8 @@ Object.keys(mapData).forEach(mapName => {
       score = 0;
       currentRound = 0;
       usedScreenshots = [];
+
+      setRandomLandingBackground();
       
     }
 
@@ -474,6 +476,36 @@ Object.keys(mapData).forEach(mapName => {
       }, 1500);
     }
 
+        function setRandomLandingBackground() {
+          const backgrounds = [
+            "background1.jpg",
+            "background2.jpg",
+            "background3.jpg",
+            "background4.jpg",
+            "background5.jpg",
+            "background6.jpg",
+            "background7.jpg",
+            "background8.jpg",
+            "background9.jpg",
+            "background10.jpg",
+            "background11.jpg",
+            "background12.jpg",
+            "background13.jpg",
+            "background14.jpg",
+            "background15.jpg"
+            ];
+
+          const randomImage = backgrounds[Math.floor(Math.random() * backgrounds.length)];
+          const landing = document.getElementById('landing');
+
+            landing.style.opacity = 0;
+
+      setTimeout(() => {
+        landing.style.backgroundImage = `url('backgrounds/${randomImage}')`;
+        landing.style.opacity = 1;
+        }, 100);
+      }
+    
      function endGame() {
         document.getElementById('finalScore').textContent = `You scored ${score} out of ${roundCount}!`;
         document.getElementById('endScreen').style.display = 'block';
@@ -498,6 +530,10 @@ Object.keys(mapData).forEach(mapName => {
     });
   });
 
+    window.addEventListener('DOMContentLoaded', () => {
+      setRandomLandingBackground();
+    });
+    
   </script>
   
     <audio id="hoverSound" src="sounds/hover.mp3"></audio>
