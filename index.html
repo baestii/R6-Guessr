@@ -73,6 +73,9 @@
       aspect-ratio: 21/9; /* Damit es schön gestreckt bleibt */
       margin-top: 2rem;
       margin-bottom: 2rem;
+      max-height: 90vh;
+      overflow: hidden;
+      animation: zoomIn 0.5s ease forwards;
       transition: background-color 1s ease, opacity 0.5s ease;
     }
     #gameFeedback {
@@ -133,6 +136,7 @@
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
   animation: fadeIn 0.8s ease-in-out;
   min-width: 300px;
+  animation: epicEndScreen 0.8s ease forwards;
 }
 
 #endScreen h2 {
@@ -167,6 +171,30 @@
   from { opacity: 0; transform: translate(-50%, -55%); }
   to { opacity: 1; transform: translate(-50%, -50%); }
 }
+@keyframes zoomIn {
+  0% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}    
+ @keyframes epicEndScreen {
+  0% {
+    transform: scale(0.8) rotate(-2deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05) rotate(2deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}   
   </style>
 </head>
 <body>
@@ -529,20 +557,36 @@ Object.keys(mapData).forEach(mapName => {
        
      
     }
-      const hoverSound = document.getElementById('hoverSound');
-      const clickSound = document.getElementById('clickSound');
+      window.addEventListener('DOMContentLoaded', () => {
+  const hoverSound = document.getElementById('hoverSound');
+  const clickSound = document.getElementById('clickSound');
 
-        document.querySelectorAll('button').forEach(button => {
-        button.addEventListener('mouseover', () => {
+  function addHoverClickSounds(elements) {
+    elements.forEach(el => {
+      el.addEventListener('mouseover', () => {
+        if (hoverSound) {
           hoverSound.currentTime = 0;
           hoverSound.play();
-        });
-
-        button.addEventListener('click', () => {
-        clickSound.currentTime = 0;
-        clickSound.play();
+        }
+      });
+      el.addEventListener('click', () => {
+        if (clickSound) {
+          clickSound.currentTime = 0;
+          clickSound.play();
+        }
+      });
     });
-  });
+  }
+
+  const buttons = document.querySelectorAll('button');
+  const selects = document.querySelectorAll('select');
+  const options = document.querySelectorAll('option');
+
+  addHoverClickSounds([...buttons, ...selects, ...options]);
+
+  setRandomLandingBackground();
+  document.getElementById('landing').style.opacity = 1;
+});
 
     window.addEventListener('DOMContentLoaded', () => {
       setRandomLandingBackground();
