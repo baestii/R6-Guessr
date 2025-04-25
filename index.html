@@ -369,11 +369,17 @@
     }
 
       function endGame() {
-           console.log("Endscreen reached!")
-        document.getElementById('game').style.display = 'none';
-        document.getElementById('endScreen').style.display = 'block';
-        document.getElementById('finalScore').textContent = `You scored ${score} out of ${roundCount}!`;
-    }
+    console.log("Game over!");
+    const endScreen = document.getElementById('endScreen');
+    const finalScore = document.getElementById('finalScore');
+    finalScore.textContent = `Your final score: ${score} / ${roundCount}`;
+
+    // Endscreen anzeigen
+    endScreen.style.display = 'flex';  // Sicherstellen, dass es flex ist
+
+    // Alle weiteren Spielelemente ausblenden
+    document.getElementById('game').style.display = 'none';
+}
   </script>
 </body>
 </html>
