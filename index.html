@@ -174,7 +174,7 @@
       nighthavenlabs: { count: 0, easy: [], normal: [], hard: [] },
       lair: { count: 0, easy: [], normal: [], hard: [] },
       stadium2020: { count: 0, easy: [], normal: [], hard: [] }
-        
+    };
 
      const mapSelect = document.getElementById('mapSelect');
     Object.keys(mapData).forEach(mapName => {
@@ -193,8 +193,7 @@
     let availableScreenshots = [];
 
 
-    function startGame() {
-      alert("StartGame aufgerufen!");
+    function startGame()  
       console.log("Start Game clicked");
       const roundSelect = document.getElementById('roundsSelect');
       roundCount = parseInt(roundSelect.value, 10) || 5;
