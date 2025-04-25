@@ -96,18 +96,54 @@
       border: none;
     }
     #endScreen {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: red;
-      color: white;
-      padding: 20px;
-      border-radius: 10px;
-      z-index: 9999;
-      text-align: center;
-    }
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(145deg, #2a2a3d, #1c1c2c);
+  color: #f4f4f4;
+  padding: 2rem;
+  border-radius: 1rem;
+  z-index: 9999;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  animation: fadeIn 0.8s ease-in-out;
+  min-width: 300px;
+}
+
+#endScreen h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #ffe066; /* Goldgelb für Siegesstimmung */
+}
+
+#endScreen p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+#endScreen button {
+  background-color: #4e8cff;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  margin: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#endScreen button:hover {
+  background-color: #3a6edc;
+  transform: scale(1.05);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -55%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
   </style>
 </head>
 <body>
@@ -147,7 +183,7 @@
   </div>
 
   <div id="endScreen">
-    <h2 class="text-3xl font-bold mb-4">Game Over! GOLD GOLD GOLD🎉</h2>
+    <h2 class="text-3xl font-bold mb-4">🎉 Game Over! GOLD GOLD GOLD 🎉</h2>
     <p id="finalScore"></p>
     <button onclick="startGame()">Play again</button>
     <button onclick="goToLanding()">Back to start</button>
@@ -374,8 +410,6 @@
     }
 
      function endGame() {
-           console.log("Endscreen reached!")
-           console.log("finalScore Element:", document.getElementById('finalScore'));
         document.getElementById('finalScore').textContent = `You scored ${score} out of ${roundCount}!`;
         document.getElementById('endScreen').style.display = 'block';
         document.getElementById('gameFeedback').style.display = 'none';
