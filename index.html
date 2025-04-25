@@ -379,11 +379,13 @@
      function endGame() {
            console.log("Endscreen reached!")
            console.log("finalScore Element:", document.getElementById('finalScore'));
+        document.getElementById('finalScore').textContent = `You scored ${score} out of ${roundCount}!`;
+        document.getElementById('endScreen').style.display = 'block';
         document.getElementById('gameFeedback').style.display = 'none';
         document.getElementById('game').style.display = 'none';
         document.getElementById('landing').style.display = "none";
-        document.getElementById('endScreen').style.display = 'block';
-        document.getElementById('finalScore').textContent = `You scored ${score} out of ${roundCount}!`;
+       
+     
     }
   </script>
 </body>
