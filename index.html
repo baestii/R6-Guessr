@@ -42,18 +42,29 @@
     button:hover {
       background-color: #3a6edc;
     }
+    #landing {
+      background: linear-gradient(145deg, #2a2a3d, #1c1c2c);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+      min-width: 300px;
+      animation: fadeIn 0.8s ease-in-out;
+    }
     #game {
-      background: transparent;
+      background: linear-gradient(145deg, #2a2a3d, #1c1c2c);
       display: none;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      height: 100%;
-      width: 100%;
+      height: 90%;
+      width: 90%;
+      max-width: 800px;
+      border-radius: 1rem;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+      padding: 2rem;
       position: relative;
       z-index: 1;
       transition: background-color 1s ease;
-      padding-bottom: 2rem;
     }
     #gameFeedback {
       position: absolute;
@@ -194,7 +205,7 @@
       house: { count: 16, easy: [1], normal: [2, 3, 7, 8, 9, 10, 12, 13], hard: [4, 5, 6, 11, 14, 15, 16] },
       oregon: { count: 29, easy: [2, 8, 9, 10, 15, 21, 24, 27], normal: [1, 3, 6, 11, 16, 18, 19, 20, 23, 26, 28, 29], hard: [4, 5, 7, 12, 13, 14, 17, 22, 25] },
       clubhouse: { count: 68, easy: [1, 3, 4, 6, 8, 12, 17, 18, 19, 22, 28, 30, 31, 38, 41, 42, 44, 55, 66], normal: [2, 5, 7, 10, 11, 15, 20, 23, 25, 27, 29, 32, 35, 36, 37, 39, 43, 47, 48, 50, 53, 56, 60, 62, 63, 67], hard: [9, 13, 14, 16, 21, 24, 26, 33, 34, 40, 45, 46, 49, 51, 52, 54, 57, 58, 59, 61, 64, 65, 68] },
-       consulate: { count: 77, easy: [12, 14, 17, 22, 23, 38, 42, 43, 45, 47, 48, 53, 60, 65, 72], normal: [1, 3, 5, 15, 16, 18, 19, 20, 21, 24, 25, 28, 32, 33, 34, 35, 36, 39, 41, 44, 46, 49, 51, 52, 55, 57, 58, 59, 64, 67, 69, 70, 71, 76, 77], hard: [2, 4, 6, 7, 8, 9, 10, 11, 13, 26, 27, 29, 30, 31, 37, 40, 50, 54, 56, 61, 62, 63, 66, 68, 73, 74, 75] },
+      consulate: { count: 77, easy: [12, 14, 17, 22, 23, 38, 42, 43, 45, 47, 48, 53, 60, 65, 72], normal: [1, 3, 5, 15, 16, 18, 19, 20, 21, 24, 25, 28, 32, 33, 34, 35, 36, 39, 41, 44, 46, 49, 51, 52, 55, 57, 58, 59, 64, 67, 69, 70, 71, 76, 77], hard: [2, 4, 6, 7, 8, 9, 10, 11, 13, 26, 27, 29, 30, 31, 37, 40, 50, 54, 56, 61, 62, 63, 66, 68, 73, 74, 75] },
       plane: { count: 48, easy: [6, 10, 21, 23, 25, 28, 41, 44, 48], normal: [1, 2, 4, 7, 9, 14, 15, 18, 20, 24, 26, 31, 32, 33, 35, 37, 39, 40, 42, 43, 45], hard: [3, 5, 8, 11, 12, 13, 16, 17, 19, 22, 27, 29, 30, 34, 36, 38, 46, 47] },
       bank: { count: 78, easy: [1, 7, 10, 13, 16, 20, 25, 29, 30, 32, 47, 49, 51, 60, 61, 62, 67, 78], normal: [2, 4, 6, 8, 11, 14, 17, 18, 21, 22, 27, 28, 31, 34, 35, 36, 37, 38, 39, 41, 42, 44, 45, 46, 48, 50, 53, 54, 55, 58, 63, 64, 65, 66, 68, 75, 76], hard: [3, 5, 9, 12, 15, 19, 23, 24, 26, 33, 40, 43, 52, 56, 57, 59, 69, 70, 71, 72, 73, 74, 77] },
       kanal: { count: 0, easy: [], normal: [], hard: [] },
@@ -218,12 +229,30 @@
     };
 
      const mapSelect = document.getElementById('mapSelect');
-    Object.keys(mapData).forEach(mapName => {
-      const option = document.createElement('option');
-      option.value = mapName.charAt(0).toUpperCase() + mapName.slice(1);
-      option.textContent = option.value;
-      mapSelect.appendChild(option);
-    });
+
+// Maps, die schöner geschrieben werden sollen
+const multiWordMaps = {
+  emeraldplains: "Emerald Plains",
+  stadiumbravo: "Stadium Bravo",
+  nighthavenlabs: "Nighthaven Labs",
+  stadium2020: "Stadium 2020",
+  themepark: "Theme Park",
+  cafe: "Café", 
+  };
+
+Object.keys(mapData).forEach(mapName => {
+  const option = document.createElement('option');
+  option.value = mapName.charAt(0).toUpperCase() + mapName.slice(1);
+
+  if (multiWordMaps[mapName]) {
+    option.textContent = multiWordMaps[mapName];
+  } else {
+    // Standard: Erster Buchstabe groß, Rest normal
+    option.textContent = mapName.charAt(0).toUpperCase() + mapName.slice(1);
+  }
+
+  mapSelect.appendChild(option);
+});
 
     let roundCount = 5;
     let currentRound = 0;
@@ -276,43 +305,76 @@
 
     
     function generateAvailableScreenshots() {
-      availableScreenshots = [];
+  availableScreenshots = [];
 
-        const mapNames = Object.keys(mapData);
-        const isProgressive = difficulty === 'progressive';
+  const mapNames = Object.keys(mapData);
+  const isProgressive = difficulty === 'progressive';
+  const mapUsage = {};
+  const maxPerMap = Math.floor(roundCount * 0.2);
 
-      for (const mapName of mapNames) {
-        const data = mapData[mapName];
-        let difficultySequence = [];
+  let initialScreenshots = [];
 
-    // Standard-Difficulty-Auswahl
-      if (difficulty === 'easy') difficultySequence = data.easy;
-        else if (difficulty === 'normal') difficultySequence = data.normal;
-        else if (difficulty === 'hard') difficultySequence = data.hard;
-        else if (difficulty === 'progressive') {
-      // Berechnung der Verteilung für "gestaffelt"
-          const totalRounds = roundCount;
-          const easyCount = Math.floor(totalRounds / 3);
-          const normalCount = Math.floor(totalRounds / 3);
-          const hardCount = totalRounds - easyCount - normalCount; // Restliche Runden für "hard"
+  for (const mapName of mapNames) {
+    const data = mapData[mapName];
+    let difficultySequence = [];
 
-        const easy = data.easy.slice(0, easyCount);
-        const normal = data.normal.slice(0, normalCount);
-        const hard = data.hard.slice(0, hardCount);
+    if (difficulty === 'easy') difficultySequence = data.easy;
+    else if (difficulty === 'normal') difficultySequence = data.normal;
+    else if (difficulty === 'hard') difficultySequence = data.hard;
+    else if (difficulty === 'progressive') {
+      const totalRounds = roundCount;
+      const easyCount = Math.floor(totalRounds / 3);
+      const normalCount = Math.floor(totalRounds / 3);
+      const hardCount = totalRounds - easyCount - normalCount;
+
+      const easy = data.easy.slice(0, easyCount);
+      const normal = data.normal.slice(0, normalCount);
+      const hard = data.hard.slice(0, hardCount);
 
       difficultySequence = [...easy, ...normal, ...hard];
-        } else {
-        difficultySequence = Array.from({ length: data.count }, (_, i) => i + 1);
-      }
+    } else {
+      difficultySequence = Array.from({ length: data.count }, (_, i) => i + 1);
+    }
 
-    // Screenshots hinzufügen
-      difficultySequence.forEach(i => {
-        availableScreenshots.push({
-          src: `screenshots/${mapName}/${mapName}${i}.png`,
-          answer: mapName.charAt(0).toUpperCase() + mapName.slice(1)
+    difficultySequence.forEach(i => {
+      initialScreenshots.push({
+        src: `screenshots/${mapName}/${mapName}${i}.png`,
+        answer: mapName.charAt(0).toUpperCase() + mapName.slice(1)
       });
     });
   }
+
+  // Falls progressive, sortieren wir die initialScreenshots nochmal
+  if (difficulty === 'progressive') {
+    const easy = initialScreenshots.filter(s => mapData[s.answer.toLowerCase()].easy.includes(parseInt(s.src.match(/(\\d+)\\.png$/)[1])));
+    const normal = initialScreenshots.filter(s => mapData[s.answer.toLowerCase()].normal.includes(parseInt(s.src.match(/(\\d+)\\.png$/)[1])));
+    const hard = initialScreenshots.filter(s => mapData[s.answer.toLowerCase()].hard.includes(parseInt(s.src.match(/(\\d+)\\.png$/)[1])));
+
+    initialScreenshots = [
+      ...selectRandom(easy, Math.floor(roundCount / 3)),
+      ...selectRandom(normal, Math.floor(roundCount / 3)),
+      ...selectRandom(hard, roundCount - Math.floor(roundCount / 3) * 2)
+    ];
+  }
+
+  // Shuffle initialScreenshots
+  for (let i = initialScreenshots.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [initialScreenshots[i], initialScreenshots[j]] = [initialScreenshots[j], initialScreenshots[i]];
+  }
+
+  // Map-Limit berücksichtigen
+  for (const candidate of initialScreenshots) {
+    const mapName = candidate.answer.toLowerCase();
+    if (!mapUsage[mapName]) mapUsage[mapName] = 0;
+    if (mapUsage[mapName] >= maxPerMap) continue;
+
+    availableScreenshots.push(candidate);
+    mapUsage[mapName]++;
+
+    if (availableScreenshots.length >= roundCount) break;
+  }
+}
 
       // Zufällige Auswahl für "gestaffelt"
       if (difficulty === 'progressive') {
