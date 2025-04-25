@@ -466,18 +466,18 @@ Object.keys(mapData).forEach(mapName => {
       currentRound = 0;
       usedScreenshots = [];
 
-      setRandomLandingBackground();
-      
-    }
+      function setRandomLandingBackground() {
+        const numberOfBackgrounds = 30; // <<< HIER einfach die Gesamtanzahl deiner Backgrounds eintragen!
+        const randomNumber = Math.floor(Math.random() * numberOfBackgrounds) + 1;
+        const randomImage = `backgrounds/background${randomNumber}.jpg`;
 
-     // Zufällige Auswahl von Screenshots
-    function selectRandom(list, count) {
-      const selected = [];
-      while (selected.length < count && list.length > 0) {
-        const index = Math.floor(Math.random() * list.length);
-          selected.push(list.splice(index, 1)[0]);
-        }
-      return selected;
+        const body = document.body;
+        body.style.opacity = 0;
+
+        setTimeout(() => {
+          body.style.backgroundImage = `url('${randomImage}')`;
+          body.style.opacity = 1;
+        }, 100);
       }
 
     
