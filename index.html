@@ -59,20 +59,21 @@
       animation: fadeIn 0.8s ease-in-out;
     }
     #game {
-      background: linear-gradient(145deg, #2a2a3d, #1c1c2c);
+      background: linear-gradient(135deg, #ff4ecb, #1e90ff); /* Magenta -> Royal Blue */
       display: none;
       flex-direction: column;
       align-items: center;
-      justify-content: space-between;
-      height: 90%;
-      width: 90%;
-      max-width: 800px;
+      justify-content: flex-start;
+      padding: 2rem;
       border-radius: 1rem;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-      padding: 2rem;
-      position: relative;
-      z-index: 1;
-      transition: background-color 1s ease;
+      height: auto;
+      width: 90%;
+      max-width: 2600px; /* Maximale Breite für große Monitore */
+      aspect-ratio: 21/9; /* Damit es schön gestreckt bleibt */
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      transition: background-color 1s ease, opacity 0.5s ease;
     }
     #gameFeedback {
       position: absolute;
@@ -97,10 +98,13 @@
       transition: width 0.5s ease;
     }
     #screenshot {
-      max-width: 80vw;
-      max-height: 50vh;
+      width: 100%;
+      height: auto;
+      max-height: 90%;
       border-radius: 1rem;
       margin-bottom: 1rem;
+      object-fit: cover;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
     }
     img {
       max-width: 80vw;
@@ -207,7 +211,12 @@
     <button onclick="startGame()">Play again</button>
     <button onclick="goToLanding()">Back to start</button>
   </div>
-    
+
+ 
+    <audio id="hoverSound" src="sounds/hover.mp3"></audio>
+    <audio id="clickSound" src="sounds/click.mp3"></audio>
+  
+  
   <script>
     const mapData = {
       house: { count: 16, easy: [1], normal: [2, 3, 7, 8, 9, 10, 12, 13], hard: [4, 5, 6, 11, 14, 15, 16] },
@@ -540,9 +549,6 @@ Object.keys(mapData).forEach(mapName => {
     });
     
   </script>
-  
-    <audio id="hoverSound" src="sounds/hover.mp3"></audio>
-    <audio id="clickSound" src="sounds/click.mp3"></audio>
-  
+ 
 </body>
 </html>
