@@ -466,6 +466,9 @@ Object.keys(mapData).forEach(mapName => {
       currentRound = 0;
       usedScreenshots = [];
 
+      setRandomLandingBackground(); // Nur aufrufen, NICHT neu definieren!
+}
+
       function setRandomLandingBackground() {
         const numberOfBackgrounds = 30; // <<< HIER einfach die Gesamtanzahl deiner Backgrounds eintragen!
         const randomNumber = Math.floor(Math.random() * numberOfBackgrounds) + 1;
@@ -618,14 +621,7 @@ Object.keys(mapData).forEach(mapName => {
         const percent = (currentRound / roundCount) * 100;
         progressBar.style.width = `${percent}%`;
       }
-      setTimeout(() => {
-      feedback.style.display = 'none';
-      img.classList.remove('glow-correct', 'glow-wrong');
-      resultBox.classList.remove('correct', 'wrong');  
-        loadScreenshot();
-      }, 1500);
-    
-
+      
     
     function checkAnswer() {
       const guess = document.getElementById('mapSelect').value;
@@ -655,41 +651,14 @@ if (guess.toLowerCase() === current.answer.toLowerCase()) {
       updateStats();
 
       setTimeout(() => {
-        feedback.style.display = 'none';
-        imgContainer.style.backgroundColor = '';
-        loadScreenshot();
-      }, 1500);
+  feedback.style.display = 'none';
+  img.classList.remove('glow-correct', 'glow-wrong');
+  resultBox.classList.remove('correct', 'wrong');  
+  loadScreenshot();
+}, 1500);
     }
 
-        function setRandomLandingBackground() {
-          const backgrounds = [
-            "background1.jpg",
-            "background2.jpg",
-            "background3.jpg",
-            "background4.jpg",
-            "background5.jpg",
-            "background6.jpg",
-            "background7.jpg",
-            "background8.jpg",
-            "background9.jpg",
-            "background10.jpg",
-            "background11.jpg",
-            "background12.jpg",
-            "background13.jpg",
-            "background14.jpg",
-            "background15.jpg"
-            ];
-
-          const randomImage = backgrounds[Math.floor(Math.random() * backgrounds.length)];
-          const body = document.body;
-
-              body.style.opacity = 0;
-
-        setTimeout(() => {
-            body.style.backgroundImage = `url('backgrounds/${randomImage}')`;
-            body.style.opacity = 1;
-            }, 100);
-      }
+        
 
         function weightedRandomSound(soundsArray) {
           const totalWeight = soundsArray.reduce((acc, sound) => acc + sound.weight, 0);
@@ -811,8 +780,8 @@ selects.forEach(select => {
   setRandomLandingBackground();
   document.getElementById('landing').style.opacity = 1;
 });
-
-  
+    }
+    
     
   </script>
  
