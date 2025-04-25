@@ -142,7 +142,7 @@
     <button onclick="checkAnswer()">Submit</button>
     <p id="result"></p>
 
-   <div id="endScreen" class="hidden flex flex-col items-center justify-center h-screen text-white">
+   <div id="endScreen" class="hidden flex flex-col items-center justify-center h-screen text-white" style="display: none;">
     <h2 class="text-3xl font-bold mb-4">Game Over! GOLD GOLD GOLD🎉</h2>
     <p id="finalScore"></p>
     <button onclick="startGame()">Play again</button>
@@ -196,6 +196,7 @@
 
     function startGame()   {
       console.log("Start Game clicked");
+      
       const roundSelect = document.getElementById('roundsSelect');
       roundCount = parseInt(roundSelect.value, 10) || 5;
       difficulty = document.getElementById('difficultySelect').value;
