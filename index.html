@@ -98,12 +98,17 @@
       border: none;
     }
     #endScreen {
-      z-index: 1000;
-      display: flex;
+      display: none
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.7); /* Sicherstellen, dass der Hintergrund sichtbar ist */
+      color: white;
+      padding: 20px;
+      border-raduis:10px;
+      z-index: 9999;
       text-align: center;
-        /* background-color: rgba(0, 0, 0, 0.7); /* Sicherstellen, dass der Hintergrund sichtbar ist */
-        /* padding: 20px;
-          border-radius: 10px; */
     }
   </style>
 </head>
@@ -376,7 +381,7 @@
     finalScore.textContent = `Your final score: ${score} / ${roundCount}`;
 
     // Endscreen anzeigen
-    endScreen.style.display = 'flex';  // Sicherstellen, dass es flex ist
+    endScreen.style.display = 'block';  // Sicherstellen, dass es flex ist
 
     // Alle weiteren Spielelemente ausblenden
     document.getElementById('game').style.display = 'none';
