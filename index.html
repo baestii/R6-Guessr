@@ -621,7 +621,7 @@ Object.keys(mapData).forEach(mapName => {
         const percent = (currentRound / roundCount) * 100;
         progressBar.style.width = `${percent}%`;
       }
-      
+    }
     
     function checkAnswer() {
       const guess = document.getElementById('mapSelect').value;
@@ -780,8 +780,6 @@ selects.forEach(select => {
   setRandomLandingBackground();
   document.getElementById('landing').style.opacity = 1;
 });
-    }
-    
     
   </script>
  
