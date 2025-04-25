@@ -200,6 +200,9 @@
 <body>
   <div class="container" id="landing">
     <h1>R6 Guessr</h1>
+    <button id="soundToggleButton" style="position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer;">
+  🔊
+    </button>
     <p>Can you recognize Rainbow Six Siege maps from a single screenshot? Test your knowledge!</p>
     <label for="roundsSelect">Rounds: </label>
     <select id="roundsSelect">
@@ -285,6 +288,31 @@ const multiWordMaps = {
   cafe: "Café", 
   };
 
+
+  const victorySounds = [
+  { path: "sounds/victory1.mp3", weight: 7 },
+  { path: "sounds/victory2.mp3", weight: 30 },
+  { path: "sounds/victory3.mp3", weight: 5 },
+  { path: "sounds/victory4.mp3", weight: 30 },
+  { path: "sounds/victory5.mp3", weight: 28 }
+];
+
+const respectSounds = [
+  { path: "sounds/respect1.mp3", weight: 28 },
+  { path: "sounds/respect2.mp3", weight: 28 },
+  { path: "sounds/respect3.mp3", weight: 15 },
+  { path: "sounds/respect4.mp3", weight: 29 }
+];
+
+const failureSounds = [
+  { path: "sounds/failure1.mp3", weight: 17 },
+  { path: "sounds/failure2.mp3", weight: 50 },
+  { path: "sounds/failure3.mp3", weight: 17 },
+  { path: "sounds/failure4.mp3", weight: 16 }
+];
+
+    
+    
    // Sound-Volume-Settings
   const soundVolumes = {
   // Victory Sounds
@@ -306,6 +334,9 @@ const multiWordMaps = {
   "sounds/failure3.mp3": 0.2,
   "sounds/failure4.mp3": 0.3,
 };
+
+   let soundEnabled = true; // Standardmäßig an
+    
     
 Object.keys(mapData).forEach(mapName => {
   const option = document.createElement('option');
@@ -572,6 +603,55 @@ Object.keys(mapData).forEach(mapName => {
             body.style.opacity = 1;
             }, 100);
       }
+
+        function weightedRandomSound(soundsArray) {
+          const totalWeight = soundsArray.reduce((acc, sound) => acc + sound.weight, 0);
+          let random = Math.random() * totalWeight;
+
+          for (const sound of soundsArray) {
+            if (random < sound.weight) {
+            return sound.path;
+            }
+            random -= sound.weight;
+            }
+
+            // Falls irgendwas schiefgeht, nimm den ersten Sound
+            return soundsArray[0].path;
+      }
+
+        function triggerVictoryCelebration() {
+            console.log("Victory Celebration triggered!");
+
+              const selectedSound = weightedRandomSound(victorySounds);
+              const audio = new Audio(selectedSound);
+              audio.volume = soundVolumes[selectedSound] || 0.7;
+              audio.play();
+
+            // Animationen später hier
+                alert("🎉 Victory! Confetti and lights everywhere! 🎉");
+      }
+
+        function triggerRespectCelebration() {
+             console.log("Respect Celebration triggered!");
+
+              const selectedSound = weightedRandomSound(respectSounds);
+              const audio = new Audio(selectedSound);
+              audio.volume = soundVolumes[selectedSound] || 0.7;
+              audio.play();
+
+                alert("👏 Good Job! Applause emojis flying up! 👏");
+      }
+
+        function triggerFailureAnimation() {
+            console.log("Failure Animation triggered!");
+
+              const selectedSound = weightedRandomSound(failureSounds);
+              const audio = new Audio(selectedSound);
+              audio.volume = soundVolumes[selectedSound] || 0.7;
+              audio.play();
+
+                alert("😢 Better luck next time! Sad emojis raining. 😢");
+    }
     
      function endGame() {
         document.getElementById('finalScore').textContent = `You scored ${score} out of ${roundCount}!`;
@@ -600,13 +680,17 @@ Object.keys(mapData).forEach(mapName => {
       el.addEventListener('mouseover', () => {
         if (hoverSound) {
           hoverSound.currentTime = 0;
-          hoverSound.play();
+          if (soundEnabled) {
+            hoverSound.play();
+            }
         }
       });
       el.addEventListener('click', () => {
         if (clickSound) {
           clickSound.currentTime = 0;
-          clickSound.play();
+          if (soundEnabled) {
+              clickSound.play();
+            }
         }
       });
     });
@@ -616,7 +700,14 @@ Object.keys(mapData).forEach(mapName => {
   const selects = document.querySelectorAll('select');
   const options = document.querySelectorAll('option');
 
-  addHoverClickSounds([...buttons, ...selects, ...options]);
+  const soundToggleButton = document.getElementById('soundToggleButton');
+
+soundToggleButton.addEventListener('click', () => {
+  soundEnabled = !soundEnabled;
+  soundToggleButton.textContent = soundEnabled ? "🔊" : "🔇";
+});
+
+  addHoverClickSounds([...options]);
 
   setRandomLandingBackground();
   document.getElementById('landing').style.opacity = 1;
