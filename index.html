@@ -8,14 +8,19 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #1e1e2f;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
       color: #f4f4f4;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      overflow: hidden;
+      min-height: 100vh;
+      overflow-x: hidden;
+      backdrop-filter: blur(4px);
+      transition: background-image 0.5s ease-in-out, opacity 0.5s ease-in-out;
     }
     .container {
       text-align: center;
@@ -496,14 +501,14 @@ Object.keys(mapData).forEach(mapName => {
             ];
 
           const randomImage = backgrounds[Math.floor(Math.random() * backgrounds.length)];
-          const landing = document.getElementById('landing');
+          const body = document.body;
 
-            landing.style.opacity = 0;
+              body.style.opacity = 0;
 
-      setTimeout(() => {
-        landing.style.backgroundImage = `url('backgrounds/${randomImage}')`;
-        landing.style.opacity = 1;
-        }, 100);
+        setTimeout(() => {
+            body.style.backgroundImage = `url('backgrounds/${randomImage}')`;
+            body.style.opacity = 1;
+            }, 100);
       }
     
      function endGame() {
