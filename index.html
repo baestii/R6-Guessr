@@ -141,8 +141,8 @@
     <button onclick="checkAnswer()">Submit</button>
     <p id="result"></p>
 
-  <div id="endScreen">
-    <h2>Game Over! GOLD GOLD GOLD🎉</h2>
+   <div id="endScreen" class="hidden flex flex-col items-center justify-center h-screen text-white">
+    <h2 class="text-3xl font-bold mb-4">Game Over! GOLD GOLD GOLD🎉</h2>
     <p id="finalScore"></p>
     <button onclick="startGame()">Play again</button>
     <button onclick="goToLanding()">Back to start</button>
@@ -348,10 +348,10 @@
       }, 1500);
     }
 
-    function endGame() {
-      document.getElementById('game').style.display = 'none';
-      document.getElementById('endScreen').style.display = 'block';
-      document.getElementById('finalScore').textContent = `You scored ${score} out of ${roundCount}!`;
+      function endGame() {
+        document.getElementById('game').classList.add('hidden');
+        document.getElementById('endScreen').classList.remove('hidden');
+        document.getElementById('finalScore').textContent = `You scored ${score} out of ${roundCount}!`;
     }
   </script>
 </body>
