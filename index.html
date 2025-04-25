@@ -103,7 +103,8 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background-color: rgba(0, 0, 0, 0.7); /* Sicherstellen, dass der Hintergrund sichtbar ist */
+      background: red;
+      /*background-color: rgba(0, 0, 0, 0.7); /* Sicherstellen, dass der Hintergrund sichtbar ist */
       color: white;
       padding: 20px;
       border-radius: 10px;
@@ -147,9 +148,12 @@
     <button onclick="checkAnswer()">Submit</button>
     <p id="result"></p>
 
-  <div id="endScreen" style="display: block; background: red; z-index: 9999;">
-  <h2>TEST</h2>
-</div>
+    <div id="endScreen">
+      <h2 class="text-3xl font-bold mb-4">Game Over! GOLD GOLD GOLD🎉</h2>
+      <p id="finalScore"></p>
+      <button onclick="startGame()">Play again</button>
+      <button onclick="goToLanding()">Back to start</button>
+  </div>
     
   <script>
     const mapData = {
@@ -373,6 +377,7 @@
 
      function endGame() {
            console.log("Endscreen reached!")
+           console.log("finalScore Element:", document.getElementById('finalScore'));
         document.getElementById('gameFeedback').style.display = 'none';
         document.getElementById('game').style.display = 'none';
         document.getElementById('landing').style.display = "none";
