@@ -64,7 +64,7 @@
       animation: fadeIn 0.8s ease-in-out forwards;
     }
     #game {
-      background: linear-gradient(135deg, #ff4ecb, #1e90ff); /* Magenta -> Royal Blue */
+      background: linear-gradient(135deg, #ff4ecb, #1e90ff); /* Gradient */
       display: none;
       flex-direction: column;
       align-items: center;
@@ -72,14 +72,9 @@
       padding: 2rem;
       border-radius: 1rem;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-      height: auto;
       width: 90%;
-      max-width: 2600px; /* Maximale Breite für große Monitore */
-      aspect-ratio: 21/9; /* Damit es schön gestreckt bleibt */
-      margin-top: 2rem;
-      margin-bottom: 2rem;
-      max-height: 90vh;
-      overflow: hidden;
+      max-width: 1200px; /* Max Breite begrenzen */
+      margin: 2rem auto;
       animation: zoomIn 0.5s ease forwards;
       transition: background-color 1s ease, opacity 0.5s ease;
     }
@@ -108,7 +103,7 @@
     #screenshot {
       width: 100%;
       height: auto;
-      max-height: 90%;
+      max-height: 60vh;
       border-radius: 1rem;
       margin-bottom: 1rem;
       object-fit: contain;
@@ -121,6 +116,12 @@
       align-items: center;
     }
 
+    #mapSelect,
+  #result,
+  #game button {
+    display: block;
+    margin-top: 1rem
+  }
     #controls {
       display: flex;
       flex-direction: column;
