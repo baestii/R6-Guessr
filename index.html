@@ -56,7 +56,12 @@
       border-radius: 1rem;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
       min-width: 300px;
-      animation: fadeIn 0.8s ease-in-out;
+      opacity: 0;
+      transform: translate(-50%, -50%);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      animation: fadeIn 0.8s ease-in-out forwards;
     }
     #game {
       background: linear-gradient(135deg, #ff4ecb, #1e90ff); /* Magenta -> Royal Blue */
@@ -106,8 +111,29 @@
       max-height: 90%;
       border-radius: 1rem;
       margin-bottom: 1rem;
-      object-fit: cover;
+      object-fit: contain;
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+    }
+    #screenshotContainer {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    #mapSelect, #controls button {
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border-radius: 0.5rem;
+      border: none;
     }
     img {
       max-width: 80vw;
@@ -223,18 +249,26 @@
   </div>
 
   <div id="game">
-    <div id="gameFeedback"></div>
-    <p id="stats"></p>
-    <div id="progressBarContainer">
-      <div id="progressBar"></div>
-    </div>
+  <div id="gameFeedback"></div>
+  <p id="stats"></p>
+  
+  <div id="progressBarContainer">
+    <div id="progressBar"></div>
+  </div>
+
+  <div id="screenshotContainer">
     <img id="screenshot" src="" alt="Map screenshot">
+  </div>
+
+  <div id="controls">
     <select id="mapSelect">
       <option value="">Select a map</option>
     </select>
     <button onclick="checkAnswer()">Submit</button>
-    <p id="result"></p>
   </div>
+
+  <p id="result"></p>
+</div>
 
   <div id="endScreen">
     <h2 class="text-3xl font-bold mb-4">🎉 Game Over! GOLD GOLD GOLD 🎉</h2>
@@ -674,48 +708,41 @@ Object.keys(mapData).forEach(mapName => {
       window.addEventListener('DOMContentLoaded', () => {
   const hoverSound = document.getElementById('hoverSound');
   const clickSound = document.getElementById('clickSound');
+  const soundToggleButton = document.getElementById('soundToggleButton');
 
-  function addHoverClickSounds(elements) {
-    elements.forEach(el => {
-      el.addEventListener('mouseover', () => {
-        if (hoverSound) {
-          hoverSound.currentTime = 0;
-          if (soundEnabled) {
-            hoverSound.play();
-            }
-        }
-      });
-      el.addEventListener('click', () => {
-        if (clickSound) {
-          clickSound.currentTime = 0;
-          if (soundEnabled) {
-              clickSound.play();
-            }
-        }
-      });
+  const buttons = document.querySelectorAll('button');
+  const options = document.querySelectorAll('option');
+
+  if (soundToggleButton) {
+    soundToggleButton.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      soundToggleButton.textContent = soundEnabled ? "🔊" : "🔇";
     });
   }
 
-  const buttons = document.querySelectorAll('button');
-  const selects = document.querySelectorAll('select');
-  const options = document.querySelectorAll('option');
+  // Hover-Sound nur bei Options
+  options.forEach(option => {
+    option.addEventListener('mouseover', () => {
+      if (hoverSound && soundEnabled) {
+        hoverSound.currentTime = 0;
+        hoverSound.play();
+      }
+    });
+  });
 
-  const soundToggleButton = document.getElementById('soundToggleButton');
-
-soundToggleButton.addEventListener('click', () => {
-  soundEnabled = !soundEnabled;
-  soundToggleButton.textContent = soundEnabled ? "🔊" : "🔇";
-});
-
-  addHoverClickSounds([...options]);
+  // Click-Sound nur bei Buttons
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      if (clickSound && soundEnabled) {
+        clickSound.currentTime = 0;
+        clickSound.play();
+      }
+    });
+  });
 
   setRandomLandingBackground();
   document.getElementById('landing').style.opacity = 1;
 });
-
-    window.addEventListener('DOMContentLoaded', () => {
-      setRandomLandingBackground();
-    });
 
   
     
