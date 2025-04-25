@@ -290,7 +290,7 @@
       
     function loadScreenshot() {
       if (currentRound >= roundCount) {
-        console.log("Endscreen reached!")
+     
         endGame();
         return;
       }
@@ -368,6 +368,7 @@
     }
 
       function endGame() {
+           console.log("Endscreen reached!")
         document.getElementById('game').style.display = 'none';
         document.getElementById('endScreen').style.display = 'block';
         document.getElementById('finalScore').textContent = `You scored ${score} out of ${roundCount}!`;
