@@ -61,7 +61,6 @@
       left: 0;
       width: 100%;
       height: 100%;
-      /*background-color: rgba(0, 0, 0, 0.3);*/
       z-index: 0;
       transition: background-color 1s ease;
       display: none;
@@ -69,15 +68,13 @@
     #progressBarContainer {
       width: 80%;
       height: 20px;
-      /*background-color: #444;*/
       border-radius: 10px;
       overflow: hidden;
       margin-bottom: 1rem;
-    }    
+    }
     #progressBar {
       height: 100%;
       width: 0%;
-      /*background-color: #4e8cff;*/
       transition: width 0.5s ease;
     }
     #screenshot {
@@ -105,7 +102,6 @@
       left: 50%;
       transform: translate(-50%, -50%);
       background: red;
-      /*background-color: rgba(0, 0, 0, 0.7); /* Sicherstellen, dass der Hintergrund sichtbar ist */
       color: white;
       padding: 20px;
       border-radius: 10px;
@@ -149,12 +145,12 @@
     <button onclick="checkAnswer()">Submit</button>
     <p id="result"></p>
   </div>
-    
+
   <div id="endScreen">
-      <h2 class="text-3xl font-bold mb-4">Game Over! GOLD GOLD GOLD🎉</h2>
-      <p id="finalScore"></p>
-      <button onclick="startGame()">Play again</button>
-      <button onclick="goToLanding()">Back to start</button>
+    <h2 class="text-3xl font-bold mb-4">Game Over! GOLD GOLD GOLD🎉</h2>
+    <p id="finalScore"></p>
+    <button onclick="startGame()">Play again</button>
+    <button onclick="goToLanding()">Back to start</button>
   </div>
     
   <script>
