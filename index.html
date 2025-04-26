@@ -64,7 +64,7 @@
       animation: fadeIn 0.8s ease-in-out forwards;
     }
     #game {
-      background: linear-gradient(135deg, #ff4ecb, #1e90ff); /* Gradient */
+      background: linear-gradient(135deg, #ff4ecb, #1e90ff);
       display: none;
       flex-direction: column;
       align-items: center;
@@ -73,12 +73,12 @@
       border-radius: 1rem;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
       width: 90%;
-      max-width: 1200px; /* Max Breite begrenzen */
+      max-width: 1200px;
       margin: 2rem auto;
       animation: zoomIn 0.5s ease forwards;
       transition: background-color 1s ease, opacity 0.5s ease;
-      height: auto;
-      min-height: 80vh;
+      min-height: 90vh;
+      overflow-y: auto;
     }
     #gameFeedback {
       position: absolute;
@@ -114,7 +114,7 @@
     #screenshot {
       width: 100%;
       height: auto;
-      max-height: 45vh;
+      max-height: 35vh;
       border-radius: 0.5rem;
       margin-bottom: 1rem;
       object-fit: cover;
@@ -137,20 +137,41 @@
 }
 
 .map-button {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  background-color: #4e8cff;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  background-color: #3a3a3a;
+  color: #f4f4f4;
+  border: 1px solid #666;
+  border-radius: 0.4rem;
   cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.3s ease;
+  transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .map-button:hover {
-  transform: scale(1.2);
-  background-color: #3a6edc;
+  transform: scale(1.1);
+  background-color: #555;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
+
+.map-button.selected {
+  background-color: #666;
+  transform: scale(1.1);
+}
+#stats {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+#roundInfo, #scoreInfo {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.8rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}    
     #mapSelect,
   #result,
   #game button {
@@ -447,8 +468,7 @@ const failureSounds = [
   "sounds/failure4.mp3": 0.3,
 };
 
-   let soundEnabled = true; // Standardmäßig an
-    
+  
     
 Object.keys(mapData).forEach(mapName => {
   const option = document.createElement('option');
@@ -474,6 +494,8 @@ Object.keys(mapData).forEach(mapName => {
     let usedScreenshots = [];
     let difficulty = 'mixed';
     let availableScreenshots = [];
+    let soundEnabled = true; // Standardmäßig an
+    let endScreenAudio = null;
 
 
     function selectRandom(array, count) {
@@ -482,7 +504,12 @@ Object.keys(mapData).forEach(mapName => {
 }
     
     function startGame()   {
-      console.log("Start Game clicked");
+      
+       if (endScreenAudio) {
+        endScreenAudio.pause();
+        endScreenAudio.currentTime = 0;
+        endScreenAudio = null;
+    }
       
       const roundSelect = document.getElementById('roundsSelect');
       roundCount = parseInt(roundSelect.value, 10) || 5;
@@ -502,6 +529,12 @@ Object.keys(mapData).forEach(mapName => {
     }
     
     function goToLanding() {
+      
+      if (endScreenAudio) {
+        endScreenAudio.pause();
+        endScreenAudio.currentTime = 0;
+        endScreenAudio = null;
+    }
       document.getElementById('endScreen').style.display = 'none';
       document.getElementById('landing').style.display = 'block';
       document.getElementById('game').style.display = 'none';
@@ -639,6 +672,11 @@ Object.keys(mapData).forEach(mapName => {
     }
       currentRound++;
 
+      if (selectedMapButton) {
+          selectedMapButton.classList.remove('selected');
+          selectedMapButton = null;
+      }
+
       const img = document.getElementById('screenshot');
       img.style.opacity = 0;
       img.onload = () => {
@@ -646,6 +684,7 @@ Object.keys(mapData).forEach(mapName => {
       };
 
       img.src = current.src;
+      document.getElementById('result').style.display = 'none';
       document.getElementById('result').textContent = '';
       document.getElementById('mapSelect').value = '';
       updateStats();
@@ -676,6 +715,8 @@ Object.keys(mapData).forEach(mapName => {
       feedback.style.display = 'block';
 
       const img = document.getElementById('screenshot');
+
+      document.getElementById('result').style.display = 'inline-block';
 
 const resultBox = document.getElementById('result');
 resultBox.classList.remove('correct', 'wrong'); // immer zuerst alte Klassen wegnehmen
@@ -722,9 +763,13 @@ if (guess.toLowerCase() === current.answer.toLowerCase()) {
             console.log("Victory Celebration triggered!");
 
               const selectedSound = weightedRandomSound(victorySounds);
-              const audio = new Audio(selectedSound);
-              audio.volume = soundVolumes[selectedSound] || 0.7;
-              audio.play();
+              if (endScreenAudio) {
+                endScreenAudio.pause();
+                endScreenAudio.currentTime = 0;
+              }
+                endScreenAudio = new Audio(selectedSound);
+                endScreenAudio.volume = soundVolumes[selectedSound] || 0.7;
+                endScreenAudio.play();
 
             // Animationen später hier
                 alert("🎉 Victory! Confetti and lights everywhere! 🎉");
@@ -788,6 +833,22 @@ if (guess.toLowerCase() === current.answer.toLowerCase()) {
 });
 
   const buttons = document.querySelectorAll('button');
+
+buttons.forEach(button => {
+  button.addEventListener('click', () => {
+    if (clickSound && soundEnabled) {
+      clickSound.currentTime = 0;
+      clickSound.play();
+    }
+  });
+
+  button.addEventListener('mouseenter', () => {
+    if (hoverSound && soundEnabled) {
+      hoverSound.currentTime = 0;
+      hoverSound.play();
+    }
+  });
+});
   const options = document.querySelectorAll('option');
   const selects = document.querySelectorAll('select');
 selects.forEach(select => {
