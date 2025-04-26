@@ -496,6 +496,7 @@ Object.keys(mapData).forEach(mapName => {
     let availableScreenshots = [];
     let soundEnabled = true; // Standardmäßig an
     let endScreenAudio = null;
+    let selectedMapButton = null; // aktuell ausgewählter Button merken
 
 
     function selectRandom(array, count) {
@@ -880,7 +881,7 @@ selects.forEach(select => {
       }
     });
   });
- let selectedMapButton = null; // aktuell ausgewählter Button merken
+
 
 // Alle Optionen aus mapSelect in Buttons umwandeln
 Array.from(mapSelect.options).forEach(option => {
