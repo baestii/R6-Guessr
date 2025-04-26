@@ -155,9 +155,58 @@
 }
 
 .map-button.selected {
-  background-color: #666;
+  background: linear-gradient(135deg, #ffd700, #ffa500);
+  color: #000;
   transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
 }
+
+#feedbackOverlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #2a2a3d;
+  padding: 1.5rem 2.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  opacity: 0;
+  display: none;
+  z-index: 10;
+  transition: opacity 0.5s ease;
+}
+
+#screenshot.blurred {
+  filter: blur(4px);
+  transition: filter 0.3s ease;
+}
+
+/* Neuer Style für den Submit-Button */
+#controls button {
+  background-color: #3a3a3a;
+  color: white;
+  border: 1px solid #666;
+  padding: 0.5rem 1.5rem;
+  font-size: 1.1rem;
+  border-radius: 0.6rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+#controls button:hover {
+  background-color: #32CD32; /* Lime Green */
+  box-shadow: 0 0 10px rgba(50, 205, 50, 0.7);
+  transform: scale(1.05);
+}
+
+/* Abstand Screenshot zu Buttons */
+#screenshot {
+  margin-bottom: 2rem; /* Mehr Abstand! */
+}
+    
 #stats {
   display: flex;
   justify-content: center;
@@ -338,6 +387,7 @@
   </div>
 
   <div id="game">
+     <div id="feedbackOverlay"></div>
     <div style="position: absolute; top: 20px; right: 20px;">
   <button id="soundToggleButtonGame" style="background: none; border: none; cursor: pointer; font-size: 1.5rem;">🔊</button>
 </div>
@@ -605,18 +655,6 @@ Object.keys(mapData).forEach(mapName => {
     });
   }
 
-  // Falls progressive, sortieren wir die initialScreenshots nochmal
-  if (difficulty === 'progressive') {
-    const easy = initialScreenshots.filter(s => mapData[s.answer.toLowerCase()].easy.includes(parseInt(s.src.match(/(\\d+)\\.png$/)[1])));
-    const normal = initialScreenshots.filter(s => mapData[s.answer.toLowerCase()].normal.includes(parseInt(s.src.match(/(\\d+)\\.png$/)[1])));
-    const hard = initialScreenshots.filter(s => mapData[s.answer.toLowerCase()].hard.includes(parseInt(s.src.match(/(\\d+)\\.png$/)[1])));
-
-    initialScreenshots = [
-      ...selectRandom(easy, Math.floor(roundCount / 3)),
-      ...selectRandom(normal, Math.floor(roundCount / 3)),
-      ...selectRandom(hard, roundCount - Math.floor(roundCount / 3) * 2)
-    ];
-  }
 
   // Shuffle initialScreenshots
   for (let i = initialScreenshots.length - 1; i > 0; i--) {
@@ -711,41 +749,44 @@ Object.keys(mapData).forEach(mapName => {
     }
     
     function checkAnswer() {
-      const guess = document.getElementById('mapSelect').value;
-      if (!guess) return;
+  const guess = document.getElementById('mapSelect').value;
+  if (!guess) return;
 
-      const result = document.getElementById('result');
-      const imgContainer = document.getElementById('game');
-      const feedback = document.getElementById('gameFeedback');
-      feedback.style.display = 'block';
+  const feedbackOverlay = document.getElementById('feedbackOverlay');
+  const screenshot = document.getElementById('screenshot');
 
-      const img = document.getElementById('screenshot');
+  screenshot.classList.add('blurred');
 
-      document.getElementById('result').style.display = 'inline-block';
+  if (guess.toLowerCase() === current.answer.toLowerCase()) {
+    score++;
+    feedbackOverlay.textContent = "Correct! 🎯";
+    feedbackOverlay.style.background = "linear-gradient(135deg, #228B22, #32CD32)"; // Grüner Verlauf bei korrekt
+  } else {
+    feedbackOverlay.textContent = `Wrong! ❌ It was ${current.answer}.`;
+    feedbackOverlay.style.background = "linear-gradient(135deg, #8B0000, #FF4500)"; // Roter Verlauf bei falsch
+  }
 
-const resultBox = document.getElementById('result');
-resultBox.classList.remove('correct', 'wrong'); // immer zuerst alte Klassen wegnehmen
+  feedbackOverlay.style.display = 'block';
+  
+  // Leicht verzögert, damit Transition greift
+  setTimeout(() => {
+    feedbackOverlay.style.opacity = 1;
+  }, 50);
 
-if (guess.toLowerCase() === current.answer.toLowerCase()) {
-  score++;
-  resultBox.textContent = "Correct! 🎯";
-  resultBox.classList.add('correct');
-  img.classList.add('glow-correct');
-} else {
-  resultBox.textContent = `Wrong! It was ${current.answer}.`;
-  resultBox.classList.add('wrong');
-  img.classList.add('glow-wrong');
+  updateStats();
+
+  setTimeout(() => {
+    feedbackOverlay.style.opacity = 0;
+
+    // Nach der Fade-Out Zeit (500ms) wieder display:none setzen
+    setTimeout(() => {
+      feedbackOverlay.style.display = 'none';
+      screenshot.classList.remove('blurred');
+      loadScreenshot();
+    }, 500);
+
+  }, 1500);
 }
-
-      updateStats();
-
-      setTimeout(() => {
-  feedback.style.display = 'none';
-  img.classList.remove('glow-correct', 'glow-wrong');
-  resultBox.classList.remove('correct', 'wrong');  
-  loadScreenshot();
-}, 1500);
-    }
 
         
 
