@@ -476,6 +476,11 @@ Object.keys(mapData).forEach(mapName => {
     let availableScreenshots = [];
 
 
+    function selectRandom(array, count) {
+  const shuffled = array.slice().sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
+}
+    
     function startGame()   {
       console.log("Start Game clicked");
       
@@ -766,30 +771,6 @@ if (guess.toLowerCase() === current.answer.toLowerCase()) {
      
     }
       window.addEventListener('DOMContentLoaded', () => {
-        
-      const mapButtonsContainer = document.getElementById('mapButtonsContainer');
-
-// Alle Optionen aus mapSelect in Buttons umwandeln
-Array.from(mapSelect.options).forEach(option => {
-  if (option.value !== "") { // Leeres Feld überspringen
-    const button = document.createElement('button');
-    button.classList.add('map-button');
-    button.textContent = option.textContent;
-
-    button.addEventListener('mouseenter', () => {
-      if (hoverSound && soundEnabled) {
-        hoverSound.currentTime = 0;
-        hoverSound.play();
-      }
-    });
-
-    button.addEventListener('click', () => {
-      mapSelect.value = option.value; // Auswahl setzen
-    });
-
-    mapButtonsContainer.appendChild(button);
-  }
-});
         
       const hoverSound = document.getElementById('hoverSound');
       const clickSound = document.getElementById('clickSound');
