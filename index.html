@@ -88,7 +88,7 @@
       flex-direction: column;
       align-items: center;
       position: relative;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
     }
 
     #gameFeedback {
@@ -109,13 +109,13 @@
     }
     #progressBarContainer {
       margin-top: 2.5rem;
-      width: 80%;
-      height: 20px;
+      width: 70%;
+      height: 10px;
       background-color: #333; 
-      border-radius: 10px;
+      border-radius: 5px;
       overflow: hidden;
       margin-bottom: 1rem;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
     }
     #progressBar {
       height: 100%;
@@ -123,6 +123,17 @@
       background-color: #4e8cff;
       transition: width 0.5s ease;
     }
+    #soundToggleButtonGame {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
     #screenshot {
       width: 100%;
       height: auto;
@@ -218,27 +229,19 @@
   
 #stats {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 0.5rem;
+  left: 0.5rem;
   display: flex;
-  gap: 1rem;
-  background: rgba(0, 0, 0, 0.6);
-  padding: 0.5rem 1rem;
-  border-radius: 0.8rem;
+  gap: 0.8rem;
   font-weight: bold;
   font-size: 1.2rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-  margin: 0.5rem;
 }
 
 #roundInfo, #scoreInfo {
-  background: rgba(0, 0, 0, 0.6);
-  padding: 0.6rem 1.2rem;
-  border-radius: 0.8rem;
-  font-weight: bold;
-  font-size: 1.2rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-}    
+  background: rgba(0, 0, 0, 0.5);
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.6rem;
+}
     #mapSelect,
   #result,
   #game button {
@@ -403,25 +406,24 @@
     <button onclick="startGame()">Play</button>
   </div>
 
-  <div id="game">
-     <div id="feedbackOverlay"></div>
-    <div style="position: absolute; top: 20px; right: 20px;">
-  <button id="soundToggleButtonGame" style="background: none; border: none; cursor: pointer; font-size: 1.5rem;">🔊</button>
-</div>
-  <div id="gameFeedback"></div>
-  <p id="stats"></p>
-  
+ <div id="game">
+  <div id="feedbackOverlay"></div>
+
   <div id="gameHeader">
-  <div id="stats"></div>
-  <div id="progressBarContainer">
-    <div id="progressBar"></div>
+    <div id="stats">
+      <div id="roundInfo"></div>
+      <div id="scoreInfo"></div>
+    </div>
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+    </div>
+    <button id="soundToggleButtonGame" aria-label="Toggle Sound">🔊</button>
   </div>
-</div>
+
+  <div id="gameFeedback"></div>
 
   <div id="screenshotContainer">
-  <div id="mapButtonsContainer"></div>
-  
-    
+    <div id="mapButtonsContainer"></div>
     <img id="screenshot" src="" alt="Map screenshot">
   </div>
 
@@ -432,7 +434,7 @@
     <button onclick="checkAnswer()">Submit</button>
   </div>
 
-  <p id="result" style="font-size: 1.4rem; font-weight: bold; margin-top: 1.5rem;"></p>
+  <p id="result"></p>
 </div>
 
   <div id="endScreen">
