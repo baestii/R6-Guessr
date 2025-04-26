@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>R6 Guessr</title>
+  <link rel="icon" type="image/png" href="backgrounds/logo1.png">
   <style>
     body {
       margin: 0;
@@ -563,7 +564,8 @@ Object.keys(mapData).forEach(mapName => {
     
     function generateAvailableScreenshots() {
   availableScreenshots = [];
-
+  
+      
   const mapNames = Object.keys(mapData);
   const isProgressive = difficulty === 'progressive';
   const mapUsage = {};
@@ -572,7 +574,9 @@ Object.keys(mapData).forEach(mapName => {
   let initialScreenshots = [];
 
   for (const mapName of mapNames) {
-    const data = mapData[mapName];
+  const data = mapData[mapName];
+  
+    if (data.count === 0) continue;
     let difficultySequence = [];
 
     if (difficulty === 'easy') difficultySequence = data.easy;
