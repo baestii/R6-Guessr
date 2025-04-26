@@ -124,7 +124,29 @@
       justify-content: center;
       align-items: center;
     }
+    #mapButtonsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 1rem;
+  gap: 0.5rem;
+}
 
+.map-button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #4e8cff;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.map-button:hover {
+  transform: scale(1.2);
+  background-color: #3a6edc;
+}
     #mapSelect,
   #result,
   #game button {
@@ -144,6 +166,9 @@
       font-size: 1rem;
       border-radius: 0.5rem;
       border: none;
+    }
+    #mapSelect {
+    display: none;
     }
     img {
       max-width: 80vw;
@@ -253,6 +278,12 @@
     opacity: 1;
   }
 }   
+
+.map-button.selected {
+  background-color: #6ab8ff; /* Helleres Blau */
+  transform: scale(1.2);
+}
+    
   </style>
 </head>
 <body>
@@ -292,6 +323,9 @@
   </div>
 
   <div id="screenshotContainer">
+  <div id="mapButtonsContainer"></div>
+  
+    
     <img id="screenshot" src="" alt="Map screenshot">
   </div>
 
@@ -729,9 +763,33 @@ if (guess.toLowerCase() === current.answer.toLowerCase()) {
     }
       window.addEventListener('DOMContentLoaded', () => {
         
-  const hoverSound = document.getElementById('hoverSound');
-  const clickSound = document.getElementById('clickSound');
-  const allSoundButtons = [
+      const mapButtonsContainer = document.getElementById('mapButtonsContainer');
+
+// Alle Optionen aus mapSelect in Buttons umwandeln
+Array.from(mapSelect.options).forEach(option => {
+  if (option.value !== "") { // Leeres Feld überspringen
+    const button = document.createElement('button');
+    button.classList.add('map-button');
+    button.textContent = option.textContent;
+
+    button.addEventListener('mouseenter', () => {
+      if (hoverSound && soundEnabled) {
+        hoverSound.currentTime = 0;
+        hoverSound.play();
+      }
+    });
+
+    button.addEventListener('click', () => {
+      mapSelect.value = option.value; // Auswahl setzen
+    });
+
+    mapButtonsContainer.appendChild(button);
+  }
+});
+        
+      const hoverSound = document.getElementById('hoverSound');
+      const clickSound = document.getElementById('clickSound');
+      const allSoundButtons = [
       document.getElementById('soundToggleLanding'),
       document.getElementById('soundToggleButtonGame'),
       document.getElementById('soundToggleButtonEnd')
@@ -776,6 +834,39 @@ selects.forEach(select => {
       }
     });
   });
+ let selectedMapButton = null; // aktuell ausgewählter Button merken
+
+const mapButtonsContainer = document.getElementById('mapButtonsContainer');
+
+// Alle Optionen aus mapSelect in Buttons umwandeln
+Array.from(mapSelect.options).forEach(option => {
+  if (option.value !== "") {
+    const button = document.createElement('button');
+    button.classList.add('map-button');
+    button.textContent = option.textContent;
+
+    button.addEventListener('mouseenter', () => {
+      if (hoverSound && soundEnabled) {
+        hoverSound.currentTime = 0;
+        hoverSound.play();
+      }
+    });
+
+    button.addEventListener('click', () => {
+      mapSelect.value = option.value; // Auswahl setzen
+      
+      // alte Markierung entfernen
+      if (selectedMapButton) {
+        selectedMapButton.classList.remove('selected');
+      }
+      // neue Markierung setzen
+      button.classList.add('selected');
+      selectedMapButton = button;
+    });
+
+    mapButtonsContainer.appendChild(button);
+  }
+});       
 
   setRandomLandingBackground();
   document.getElementById('landing').style.opacity = 1;
