@@ -82,6 +82,15 @@
       overflow-y: auto;
       backdrop-filter: blur(8px);
     }
+    #gameHeader {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
     #gameFeedback {
       position: absolute;
       top: 0;
@@ -99,6 +108,7 @@
       box-shadow: 0 0 25px 10px rgba(255, 0, 0, 0.5);
     }
     #progressBarContainer {
+      margin-top: 2.5rem;
       width: 80%;
       height: 20px;
       background-color: #333; 
@@ -207,10 +217,18 @@
 }
   
 #stats {
+  position: absolute;
+  top: 0;
+  left: 0;
   display: flex;
-  justify-content: center;
   gap: 1rem;
-  margin-bottom: 1rem;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 0.5rem 1rem;
+  border-radius: 0.8rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  margin: 0.5rem;
 }
 
 #roundInfo, #scoreInfo {
@@ -393,9 +411,12 @@
   <div id="gameFeedback"></div>
   <p id="stats"></p>
   
+  <div id="gameHeader">
+  <div id="stats"></div>
   <div id="progressBarContainer">
     <div id="progressBar"></div>
   </div>
+</div>
 
   <div id="screenshotContainer">
   <div id="mapButtonsContainer"></div>
