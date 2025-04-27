@@ -317,8 +317,6 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 400px; 
-  height: 280px;
   opacity: 0;
   background: linear-gradient(145deg, #2a2a3d, #1c1c2c);
   color: #f4f4f4;
@@ -330,6 +328,8 @@
   animation: epicEndScreen 0.3s ease forwards;
   box-sizing: border-box;
   overflow: hidden;
+  max-width: 90vw; /* Maximal 90% der Viewport-Breite */
+  white-space: nowrap; /* Verhindert Zeilenumbruch */
 }
 #endScreen h2 {
   font-size: 1.6rem;
@@ -1163,23 +1163,22 @@ function launchRespectEmojis() {
 
     const overlay = document.getElementById('victoryOverlay');
     overlay.innerHTML = ''; // Wichtig: Leeren!
-
+    overlay.style.background = 'transparent'; // Kein dunkler Hintergrund bei Failure
     overlay.style.display = 'flex';
     overlay.classList.add('active');
 
-    // Emojis starten
     launchFailureEmojis();
 
-     // Minecraft Schadenseffekt
+    // Minecraft Schadenseffekt oben drüber
     damageOverlay.style.transition = 'opacity 0.2s ease';
     damageOverlay.style.opacity = 1;
     setTimeout(() => {
         damageOverlay.style.opacity = 0;
     }, 200);
-          
+
+    // Overlay ausfaden
     setTimeout(() => {
         overlay.classList.add('fading-out');
-
         setTimeout(() => {
             overlay.classList.remove('active', 'fading-out');
             overlay.style.display = 'none';
