@@ -142,6 +142,15 @@
   padding: 0;
   line-height: 1;
 }
+  .sound-button-end {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 2rem;
+}  
     #screenshot {
   width: 90%; /* Nicht ganz so breit */
   height: auto;
@@ -301,8 +310,10 @@
   text-align: center;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
   animation: epicEndScreen 0.8s ease forwards;
-  height: max-content;
-  width: fit-content;
+  min-width: 400px;
+  min-height: 300px;
+  padding: 3rem 4rem;
+  box-sizing: border-box;
 }
 #endScreen h2 {
   font-size: 2rem;
@@ -408,7 +419,7 @@
 /* Emoji Animation */
 .flying-emoji {
   position: absolute;
-  font-size: 2.5rem;
+  font-size: 3.2rem;
   pointer-events: none;
   animation: flyRandom 1.5s linear forwards;
 }
@@ -416,7 +427,7 @@
 .beam {
   position: absolute;
   top: -30%;
-  width: 20px;
+  width: 40px;
   height: 160%;
   background: radial-gradient(circle at center, rgba(255,255,224,0.4) 0%, transparent 70%);
   opacity: 0.7;
@@ -426,8 +437,8 @@
 }
 
 @keyframes beamSweep {
-  0% { transform: rotate(-10deg); }
-  100% { transform: rotate(10deg); }
+  0% { transform: rotate(-20deg); }
+  100% { transform: rotate(20deg); }
 }
     
 @keyframes flyRandom {
@@ -534,7 +545,7 @@
 
   <div id="endScreen">
     <div style="position: absolute; top: 20px; right: 20px;">
-  <button id="soundToggleButtonEnd" style="background: none; border: none; cursor: pointer; font-size: 1.5rem;">🔊</button>
+  <button id="soundToggleButtonEnd" class="sound-button-end">🔊</button>
 </div>
     <h2 class="text-3xl font-bold mb-4">🎉 Game Over! You won! 🎉</h2>
     <p id="finalScore"></p>
@@ -966,8 +977,9 @@ Object.keys(mapData).forEach(mapName => {
         setTimeout(() => {
             overlay.classList.remove('active', 'fading-out');
             overlay.style.display = 'none';
+            document.getElementById('endScreen').style.display = 'block';
         }, 1000); // Fadeout dauert 1s
-    }, 4000); // 4 Sekunden sichtbar bleiben
+    }, 2500); // 4 Sekunden sichtbar bleiben
 }
 
 function startLightBeams() {
@@ -987,7 +999,7 @@ function launchVictoryEmojis() {
     const emojis = ['🥇', '🎉', '🏆', '✨', '🔥'];
     const overlay = document.getElementById('victoryOverlay');
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 35; i++) {
         const emoji = document.createElement('div');
         emoji.classList.add('flying-emoji');
         emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
@@ -1129,14 +1141,10 @@ function getRandomTextWithRare(commonArray, rareArray, rareChance = 0.1) {
   }
 }
     
-// Hilfsfunktion:
-function getRandomText(array) {
-  return array[Math.floor(Math.random() * array.length)];
-}
     
      function endGame() {
         document.getElementById('finalScore').textContent = `You scored ${score} out of ${roundCount}!`;
-        document.getElementById('endScreen').style.display = 'block';
+        document.getElementById('endScreen').style.display = 'none';
         document.getElementById('gameFeedback').style.display = 'none';
         document.getElementById('game').style.display = 'none';
         document.getElementById('landing').style.display = "none";
@@ -1144,13 +1152,13 @@ function getRandomText(array) {
        const performance = (score / roundCount) * 100;
 
         if (performance >= 90) {
-  document.querySelector('#endScreen h2').textContent = getRandomText(victoryTexts, rareVictoryTexts);
+  document.querySelector('#endScreen h2').textContent = getRandomTextWithRare(victoryTexts, rareVictoryTexts);
   triggerVictoryCelebration();
 } else if (performance >= 50) {
-  document.querySelector('#endScreen h2').textContent = getRandomText(respectTexts, rareRespectTexts);
+  document.querySelector('#endScreen h2').textContent = getRandomTextWithRare(respectTexts, rareRespectTexts);
   triggerRespectCelebration();
 } else {
-  document.querySelector('#endScreen h2').textContent = getRandomText(failureTexts, rareFailureTexts);
+  document.querySelector('#endScreen h2').textContent = getRandomTextWithRare(failureTexts, rareFailureTexts);
   triggerFailureAnimation();
 }
      
