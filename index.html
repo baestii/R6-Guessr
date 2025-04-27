@@ -302,18 +302,19 @@
   position: fixed;
   top: 50%;
   left: 50%;
+  opacity: 0;    
   transform: translate(-50%, -50%);
   background: linear-gradient(145deg, #2a2a3d, #1c1c2c);
   color: #f4f4f4;
-  padding: 2rem;
+  padding: 2rem 3rem;
   border-radius: 1rem;
   z-index: 9999;
   text-align: center;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-  animation: epicEndScreen 0.8s ease forwards;
-  min-width: 320px;
-  min-height: 500px;
+  animation: epicEndScreen 0.5s ease forwards;
+  min-width: 350px;
   width: 90%;
+  min-height: auto;
   padding: 3rem 4rem;
   box-sizing: border-box;
 }
@@ -447,6 +448,17 @@
   0% { opacity: 0; transform: translateY(100%) rotate(0deg); }
   50% { opacity: 1; }
   100% { opacity: 0; transform: translateY(-150%) rotate(360deg); }
+}
+    
+@keyframes flyCrazy {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(100vw * var(--dx)), calc(100vh * var(--dy))) rotate(720deg);
+    opacity: 0;
+  }
 }
 /* Lightbeams */
 @keyframes moveBeam {
@@ -1005,14 +1017,32 @@ function launchVictoryEmojis() {
         const emoji = document.createElement('div');
         emoji.classList.add('flying-emoji');
         emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-        emoji.style.left = Math.random() * 90 + "%";
-        emoji.style.top = Math.random() * 70 + 30 + "%";
-        emoji.style.animationDuration = (2 + Math.random() * 2) + "s";
+
+        // Zufällige Position
+        emoji.style.left = Math.random() * 100 + "vw";
+        emoji.style.top = Math.random() * 100 + "vh";
+
+        // Zufällige Flugrichtung
+        const dx = (Math.random() - 0.5) * 2; // Wert zwischen -1 und 1
+        const dy = (Math.random() - 0.5) * 2;
+
+        emoji.style.setProperty('--dx', dx);
+        emoji.style.setProperty('--dy', dy);
+
+        // Zufällige Geschwindigkeit
+        const duration = (3 + Math.random() * 4).toFixed(2); // 3-7 Sekunden
+        emoji.style.animation = `flyCrazy ${duration}s linear forwards`;
+
+        // Zufällige Größe
+        const scale = (0.7 + Math.random() * 1.5).toFixed(2); // 0.7x bis 2.2x
+        emoji.style.transform = `scale(${scale})`;
+
         overlay.appendChild(emoji);
 
+        // Länger drin lassen (wird NICHT gelöscht direkt)
         setTimeout(() => {
             emoji.remove();
-        }, 7000);
+        }, duration * 1000 + 2000); // Animation + 2 Sekunden Puffer
     }
 }
 
@@ -1052,18 +1082,36 @@ function launchRespectEmojis() {
     const emojis = ['👏', '🔥', '✨', '🏅', '🙌', '💪', '🤝', '🤙', '😎'];
     const overlay = document.getElementById('victoryOverlay');
 
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < 35; i++) {
         const emoji = document.createElement('div');
         emoji.classList.add('flying-emoji');
         emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-        emoji.style.left = Math.random() * 90 + "%";
-        emoji.style.top = Math.random() * 70 + 30 + "%";
-        emoji.style.animationDuration = (2 + Math.random() * 2) + "s";
+
+        // Zufällige Position
+        emoji.style.left = Math.random() * 100 + "vw";
+        emoji.style.top = Math.random() * 100 + "vh";
+
+        // Zufällige Flugrichtung
+        const dx = (Math.random() - 0.5) * 2; // Wert zwischen -1 und 1
+        const dy = (Math.random() - 0.5) * 2;
+
+        emoji.style.setProperty('--dx', dx);
+        emoji.style.setProperty('--dy', dy);
+
+        // Zufällige Geschwindigkeit
+        const duration = (3 + Math.random() * 4).toFixed(2); // 3-7 Sekunden
+        emoji.style.animation = `flyCrazy ${duration}s linear forwards`;
+
+        // Zufällige Größe
+        const scale = (0.7 + Math.random() * 1.5).toFixed(2); // 0.7x bis 2.2x
+        emoji.style.transform = `scale(${scale})`;
+
         overlay.appendChild(emoji);
 
+        // Länger drin lassen (wird NICHT gelöscht direkt)
         setTimeout(() => {
             emoji.remove();
-        }, 7000);
+        }, duration * 1000 + 2000); // Animation + 2 Sekunden Puffer
     }
 }
 
@@ -1103,18 +1151,36 @@ function launchFailureEmojis() {
     const emojis = ['💀', '☠️', '🥀', '🤡', '😭', '🥴', '😞', '😔'];
     const overlay = document.getElementById('victoryOverlay');
 
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < 35; i++) {
         const emoji = document.createElement('div');
         emoji.classList.add('flying-emoji');
         emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-        emoji.style.left = Math.random() * 90 + "%";
-        emoji.style.top = Math.random() * 70 + 30 + "%";
-        emoji.style.animationDuration = (2 + Math.random() * 2) + "s";
+
+        // Zufällige Position
+        emoji.style.left = Math.random() * 100 + "vw";
+        emoji.style.top = Math.random() * 100 + "vh";
+
+        // Zufällige Flugrichtung
+        const dx = (Math.random() - 0.5) * 2; // Wert zwischen -1 und 1
+        const dy = (Math.random() - 0.5) * 2;
+
+        emoji.style.setProperty('--dx', dx);
+        emoji.style.setProperty('--dy', dy);
+
+        // Zufällige Geschwindigkeit
+        const duration = (3 + Math.random() * 4).toFixed(2); // 3-7 Sekunden
+        emoji.style.animation = `flyCrazy ${duration}s linear forwards`;
+
+        // Zufällige Größe
+        const scale = (0.7 + Math.random() * 1.5).toFixed(2); // 0.7x bis 2.2x
+        emoji.style.transform = `scale(${scale})`;
+
         overlay.appendChild(emoji);
 
+        // Länger drin lassen (wird NICHT gelöscht direkt)
         setTimeout(() => {
             emoji.remove();
-        }, 7000);
+        }, duration * 1000 + 2000); // Animation + 2 Sekunden Puffer
     }
 }
 
@@ -1226,7 +1292,7 @@ function getRandomTextWithRare(commonArray, rareArray, rareChance = 0.1) {
     
      function endGame() {
         document.getElementById('finalScore').textContent = `You scored ${score} out of ${roundCount}!`;
-        document.getElementById('endScreen').style.display = 'none';
+        document.getElementById('endScreen').style.opacity = '1';
         document.getElementById('gameFeedback').style.display = 'none';
         document.getElementById('game').style.display = 'none';
         document.getElementById('landing').style.display = "none";
