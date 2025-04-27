@@ -1303,13 +1303,13 @@ function getRandomTextWithRare(commonArray, rareArray, rareChance = 0.1) {
        const performance = (score / roundCount) * 100;
 
         if (performance >= 90) {
-  document.querySelector('endScreenTitle').textContent = getRandomTextWithRare(victoryTexts, rareVictoryTexts);
+  document.querySelector('#endScreenTitle').textContent = getRandomTextWithRare(victoryTexts, rareVictoryTexts);
   triggerVictoryCelebration();
 } else if (performance >= 50) {
-  document.querySelector('endScreenTitle').textContent = getRandomTextWithRare(respectTexts, rareRespectTexts);
+  document.querySelector('#endScreenTitle').textContent = getRandomTextWithRare(respectTexts, rareRespectTexts);
   triggerRespectCelebration();
 } else {
-  document.querySelector('endScreenTitle').textContent = getRandomTextWithRare(failureTexts, rareFailureTexts);
+  document.querySelector('#endScreenTitle').textContent = getRandomTextWithRare(failureTexts, rareFailureTexts);
   triggerFailureAnimation();
 }
      
