@@ -317,10 +317,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 90%;
-  min-width: 350px;    
-  max-width: 500px;    
-  height: auto;
+  width: 400px; 
+  height: 280px;
   opacity: 0;
   background: linear-gradient(145deg, #2a2a3d, #1c1c2c);
   color: #f4f4f4;
@@ -331,11 +329,16 @@
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
   animation: epicEndScreen 0.3s ease forwards;
   box-sizing: border-box;
+  overflow: hidden;
 }
 #endScreen h2 {
-  font-size: 2rem;
+  font-size: 1.6rem;
   margin-bottom: 1rem;
-  color: #ffe066; /* Goldgelb für Siegesstimmung */
+  color: #ffe066;
+  white-space: nowrap; /* NIE umbrechen */
+  overflow: hidden;
+  text-overflow: ellipsis; /* falls zu lang */
+  max-width: 100%;
 }
 
 #endScreen p {
@@ -1096,14 +1099,16 @@ function launchVictoryEmojis() {
     launchRespectEmojis();
 
     setTimeout(() => {
-        overlay.classList.add('fading-out');
+        overlay.style.transition = 'opacity 1s ease'; // <- Wichtig
+        overlay.style.opacity = 0;
 
         setTimeout(() => {
             overlay.classList.remove('active', 'fading-out');
             overlay.style.display = 'none';
+            overlay.style.opacity = 1; 
             document.getElementById('endScreen').style.display = 'block';
-        }, 300);
-    }, 2000);
+        }, 1000);
+    }, 1800);
 }
 
 function launchRespectEmojis() {
@@ -1145,6 +1150,7 @@ function launchRespectEmojis() {
 
         function triggerFailureAnimation() {
     console.log("Failure Animation triggered!");
+    const damageOverlay = document.getElementById('damageOverlay');      
 
     const selectedSound = weightedRandomSound(failureSounds);
     if (endScreenAudio) {
@@ -1165,11 +1171,11 @@ function launchRespectEmojis() {
     launchFailureEmojis();
 
      // Minecraft Schadenseffekt
-    damageOverlay.style.transition = 'opacity 0.15s ease';
+    damageOverlay.style.transition = 'opacity 0.2s ease';
     damageOverlay.style.opacity = 1;
     setTimeout(() => {
         damageOverlay.style.opacity = 0;
-    }, 150);
+    }, 200);
           
     setTimeout(() => {
         overlay.classList.add('fading-out');
