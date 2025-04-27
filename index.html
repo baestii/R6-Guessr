@@ -418,7 +418,11 @@
   50% { opacity: 1; }
   100% { opacity: 0; transform: translateY(-150%) rotate(360deg); }
 }
-  
+/* Lightbeams */
+@keyframes moveBeam {
+  0% { transform: rotate(0deg) translateX(0); }
+  100% { transform: rotate(20deg) translateX(20px); }
+}  
 @keyframes fadeIn {
   from { opacity: 0; transform: translate(-50%, -55%); }
   to { opacity: 1; transform: translate(-50%, -50%); }
@@ -522,7 +526,7 @@
   </div>
 
   <div id="victoryOverlay">
-    < div id="lightBeams"></div>
+    <div id="lightBeams"></div>
     <div id="victoryText">GOLD GOLD GOLD</div>
   </div>
 
@@ -931,6 +935,7 @@ Object.keys(mapData).forEach(mapName => {
     // Neues: Victory Overlay anzeigen
     const overlay = document.getElementById('victoryOverlay');
     overlay.style.display = 'flex';
+    overlay.classList.add('active');
 
     // Lightbeams starten
     startLightBeams();
