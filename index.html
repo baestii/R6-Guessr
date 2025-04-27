@@ -410,9 +410,26 @@
   position: absolute;
   font-size: 2.5rem;
   pointer-events: none;
-  animation: flyRandom 3s linear forwards;
+  animation: flyRandom 1.5s linear forwards;
 }
 
+.beam {
+  position: absolute;
+  top: -30%;
+  width: 20px;
+  height: 160%;
+  background: radial-gradient(circle at center, rgba(255,255,224,0.4) 0%, transparent 70%);
+  opacity: 0.7;
+  filter: blur(8px);
+  transform-origin: top center;
+  animation: beamSweep 4s infinite alternate ease-in-out;
+}
+
+@keyframes beamSweep {
+  0% { transform: rotate(-10deg); }
+  100% { transform: rotate(10deg); }
+}
+    
 @keyframes flyRandom {
   0% { opacity: 0; transform: translateY(100%) rotate(0deg); }
   50% { opacity: 1; }
@@ -519,7 +536,7 @@
     <div style="position: absolute; top: 20px; right: 20px;">
   <button id="soundToggleButtonEnd" style="background: none; border: none; cursor: pointer; font-size: 1.5rem;">🔊</button>
 </div>
-    <h2 class="text-3xl font-bold mb-4">🎉 Game Over! GOLD GOLD GOLD 🎉</h2>
+    <h2 class="text-3xl font-bold mb-4">🎉 Game Over! You won! 🎉</h2>
     <p id="finalScore"></p>
     <button onclick="startGame()">Play again</button>
     <button onclick="goToLanding()">Back to start</button>
@@ -959,26 +976,12 @@ function startLightBeams() {
 
     for (let i = 0; i < 3; i++) {
         const beam = document.createElement('div');
-        beam.style.position = 'absolute';
-        beam.style.width = '300px';
-        beam.style.height = '600px';
-        beam.style.background = 'rgba(255, 255, 224, 0.15)';
-        beam.style.transform = `rotate(${Math.random() * 360}deg)`;
-        beam.style.top = '-50%';
-        beam.style.left = `${Math.random() * 100}%`;
-        beam.style.filter = 'blur(30px)';
-        beam.style.animation = `moveBeam 4s ease-in-out infinite alternate ${Math.random()}s`;
+        beam.classList.add('beam');
+        beam.style.left = `${Math.random() * 80 + 10}%`;
+        beam.style.animationDelay = `${Math.random() * 2}s`;
         lightBeamsContainer.appendChild(beam);
     }
 }
-
-/* Animation der Beams */
-const styleSheet = document.styleSheets[0];
-styleSheet.insertRule(`
-@keyframes moveBeam {
-  0% { transform: rotate(0deg) translateX(0); }
-  100% { transform: rotate(20deg) translateX(20px); }
-}`, styleSheet.cssRules.length);
 
 function launchVictoryEmojis() {
     const emojis = ['🥇', '🎉', '🏆', '✨', '🔥'];
@@ -1020,6 +1023,116 @@ function launchVictoryEmojis() {
 
                 alert("😢 Better luck next time! Sad emojis raining. 😢");
     }
+
+ const victoryTexts = [
+  "GOLD GOLD GOLD",
+  "Winner Winner Chicken Dinner",
+  "Victory Royale!",
+  "You are the Champion!",
+  "Mission Passed! Respect +",
+  "Achievement Unlocked: Unstoppable",
+  "Legendary Win!",
+  "No One Stands a Chance!",
+  "You are HIM",
+  "Certified Map Guessr.",
+  "Built Different™.",
+  "Peak Performance Achieved.",
+  "No Map Stands a Chance.",
+  "Too easy, honestly.",
+  "Unmatched.",
+  "Skill Issue? Not yours.",
+  "Maximum Overdrive Mode.",
+  "Boss Level Unlocked."
+];
+
+const respectTexts = [
+  "MVP Vibes! But not yet",
+  "Almost made it to greatness!",
+  "Mediocre at best.",
+  "Participation trophy earned!",
+  "Solid... kinda.",
+  "One foot in the hall of fame.",
+  "Close enough for participation points.",
+  "Respectable effort! (Sorta.)",
+  "You're like 3rd place energy.",
+  "Respectable... for now.",
+  "Somewhere between decent and legend.",
+  "Almost cracked.",
+  "Better than average, worse than great.",
+  "You ate, but left some crumbs.",
+  "Warming up, huh?",
+  "So near, yet so meme.",
+  "Congrats, you’re decent... sometimes.",
+  "Almost legendary. Almost."
+];
+
+const failureTexts = [
+  "Better Luck Next Time.",
+  "Mission Failed. We'll Get 'Em Next Time.",
+  "Press F to Pay Respects",
+  "Oof. That Was Rough.",
+  "At Least You Tried!",
+  "Never Give Up!",
+  "Pain.",
+  "You are not HIM",
+  "Tough day at the office.",
+  "Not like this... 💀",
+  "Skill Issue.",
+  "Loading... Skills (0%).",
+  "Respawn and try again.",
+  "Dreams shattered. Try again?",
+  "Was it lag? Surely it was lag.",
+  "You lost. But like... in a special way.",
+  "Life gave you a chance. You fumbled it.",
+  "Better luck next patch.",
+  "You got cooked.",
+  "Gave it your all. Should have given more.",
+  "You failed with flair. Kinda iconic.",
+  "This loss belongs in a museum.",
+  "Even RNG couldn't save you.",
+  "Better uninstall... just kidding. Or not."
+]; 
+  
+  const rareVictoryTexts = [
+  "You unlocked a Rare Dub!",
+  "Skill Level: Uninstall other players.",
+  "You got a rare text... and you earned it.",
+  "You’re the main character now.",
+  "Rare W detected.",
+  "A dub so clean it's under investigation.",
+  "You 100% the tutorial. Twice."
+];
+
+const rareRespectTexts = [
+  "Close enough to feel pain.",
+  "This rare text won’t save you.",
+  "Solid attempt. Rare encouragement unlocked.",
+  "Rare Respect drop! Almost not bad!",
+  "This is a rare text, but you’re still mid.",
+  "Rare text. Mid performance. Balanced.",
+];
+
+const rareFailureTexts = [
+  "Respawned... into another loss.",
+  "You found a rare text. Not a win, though.",
+  "Rare clown moment unlocked 🤡.",
+  "This text is rare. Your skills aren’t.",
+  "Statistically, this shouldn't happen... yet here we are.",
+  "Achievement Unlocked: Legendary Loss."
+];
+
+function getRandomTextWithRare(commonArray, rareArray, rareChance = 0.1) {
+  if (Math.random() < rareChance && rareArray.length > 0) {
+    return rareArray[Math.floor(Math.random() * rareArray.length)];
+  } else {
+    return commonArray[Math.floor(Math.random() * commonArray.length)];
+  }
+}
+    
+// Hilfsfunktion:
+function getRandomText(array) {
+  return array[Math.floor(Math.random() * array.length)];
+}
     
      function endGame() {
         document.getElementById('finalScore').textContent = `You scored ${score} out of ${roundCount}!`;
@@ -1031,11 +1144,14 @@ function launchVictoryEmojis() {
        const performance = (score / roundCount) * 100;
 
         if (performance >= 90) {
-          triggerVictoryCelebration();
-      } else if (performance >= 50) {
-          triggerRespectCelebration();
-      } else {
-          triggerFailureAnimation();
+  document.querySelector('#endScreen h2').textContent = getRandomText(victoryTexts, rareVictoryTexts);
+  triggerVictoryCelebration();
+} else if (performance >= 50) {
+  document.querySelector('#endScreen h2').textContent = getRandomText(respectTexts, rareRespectTexts);
+  triggerRespectCelebration();
+} else {
+  document.querySelector('#endScreen h2').textContent = getRandomText(failureTexts, rareFailureTexts);
+  triggerFailureAnimation();
 }
      
     }
