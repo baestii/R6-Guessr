@@ -184,6 +184,7 @@
   transform: scale(1.1);
   background-color: #555;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  transition: transform 0.2s ease;
 }
 
 .map-button.selected {
@@ -354,6 +355,69 @@
   box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
 }
 
+#victoryOverlay {
+  transition: opacity 1s ease;
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4); /* leicht abdunkeln */
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 99999;
+  overflow: hidden;
+}
+
+#victoryOverlay.active {
+  display: flex;
+  opacity: 1;
+}
+#victoryOverlay.fading-out {
+  opacity: 0;
+}
+    
+#lightBeams {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Glow Text */
+#victoryText {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #ffe066;
+  text-shadow: 0 0 10px #ffe066, 0 0 20px #ffd700, 0 0 30px #ffea00;
+  z-index: 2;
+  animation: glowPulse 2s infinite alternate;
+}
+
+@keyframes glowPulse {
+  from { text-shadow: 0 0 5px #ffe066, 0 0 10px #ffd700, 0 0 20px #ffea00; }
+  to { text-shadow: 0 0 20px #ffe066, 0 0 30px #ffd700, 0 0 40px #ffea00; }
+}
+
+/* Emoji Animation */
+.flying-emoji {
+  position: absolute;
+  font-size: 2.5rem;
+  pointer-events: none;
+  animation: flyRandom 3s linear forwards;
+}
+
+@keyframes flyRandom {
+  0% { opacity: 0; transform: translateY(100%) rotate(0deg); }
+  50% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-150%) rotate(360deg); }
+}
   
 @keyframes fadeIn {
   from { opacity: 0; transform: translate(-50%, -55%); }
@@ -455,6 +519,11 @@
     <p id="finalScore"></p>
     <button onclick="startGame()">Play again</button>
     <button onclick="goToLanding()">Back to start</button>
+  </div>
+
+  <div id="victoryOverlay">
+    < div id="lightBeams"></div>
+    <div id="victoryText">GOLD GOLD GOLD</div>
   </div>
 
  
@@ -848,20 +917,82 @@ Object.keys(mapData).forEach(mapName => {
       }
 
         function triggerVictoryCelebration() {
-            console.log("Victory Celebration triggered!");
+    console.log("Victory Celebration triggered!");
 
-              const selectedSound = weightedRandomSound(victorySounds);
-              if (endScreenAudio) {
-                endScreenAudio.pause();
-                endScreenAudio.currentTime = 0;
-              }
-                endScreenAudio = new Audio(selectedSound);
-                endScreenAudio.volume = soundVolumes[selectedSound] || 0.7;
-                endScreenAudio.play();
+    const selectedSound = weightedRandomSound(victorySounds);
+    if (endScreenAudio) {
+        endScreenAudio.pause();
+        endScreenAudio.currentTime = 0;
+    }
+    endScreenAudio = new Audio(selectedSound);
+    endScreenAudio.volume = soundVolumes[selectedSound] || 0.7;
+    endScreenAudio.play();
 
-            // Animationen später hier
-                alert("🎉 Victory! Confetti and lights everywhere! 🎉");
-      }
+    // Neues: Victory Overlay anzeigen
+    const overlay = document.getElementById('victoryOverlay');
+    overlay.style.display = 'flex';
+
+    // Lightbeams starten
+    startLightBeams();
+    // Emojis starten
+    launchVictoryEmojis();
+
+    setTimeout(() => {
+        overlay.classList.add('fading-out');
+
+        // Nach dem Fadeout wieder richtig verstecken
+        setTimeout(() => {
+            overlay.classList.remove('active', 'fading-out');
+            overlay.style.display = 'none';
+        }, 1000); // Fadeout dauert 1s
+    }, 4000); // 4 Sekunden sichtbar bleiben
+}
+
+function startLightBeams() {
+    const lightBeamsContainer = document.getElementById('lightBeams');
+    lightBeamsContainer.innerHTML = '';
+
+    for (let i = 0; i < 3; i++) {
+        const beam = document.createElement('div');
+        beam.style.position = 'absolute';
+        beam.style.width = '300px';
+        beam.style.height = '600px';
+        beam.style.background = 'rgba(255, 255, 224, 0.15)';
+        beam.style.transform = `rotate(${Math.random() * 360}deg)`;
+        beam.style.top = '-50%';
+        beam.style.left = `${Math.random() * 100}%`;
+        beam.style.filter = 'blur(30px)';
+        beam.style.animation = `moveBeam 4s ease-in-out infinite alternate ${Math.random()}s`;
+        lightBeamsContainer.appendChild(beam);
+    }
+}
+
+/* Animation der Beams */
+const styleSheet = document.styleSheets[0];
+styleSheet.insertRule(`
+@keyframes moveBeam {
+  0% { transform: rotate(0deg) translateX(0); }
+  100% { transform: rotate(20deg) translateX(20px); }
+}`, styleSheet.cssRules.length);
+
+function launchVictoryEmojis() {
+    const emojis = ['🥇', '🎉', '🏆', '✨', '🔥'];
+    const overlay = document.getElementById('victoryOverlay');
+
+    for (let i = 0; i < 10; i++) {
+        const emoji = document.createElement('div');
+        emoji.classList.add('flying-emoji');
+        emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        emoji.style.left = Math.random() * 90 + "%";
+        emoji.style.top = Math.random() * 70 + 30 + "%";
+        emoji.style.animationDuration = (2 + Math.random() * 2) + "s";
+        overlay.appendChild(emoji);
+
+        setTimeout(() => {
+            emoji.remove();
+        }, 4000);
+    }
+}
 
         function triggerRespectCelebration() {
              console.log("Respect Celebration triggered!");
