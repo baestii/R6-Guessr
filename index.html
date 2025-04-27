@@ -300,8 +300,9 @@
     #endScreen {
   display: none;
   position: fixed;
-  inset: 0;
-  margin: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background: linear-gradient(145deg, #2a2a3d, #1c1c2c);
   color: #f4f4f4;
   padding: 2rem;
@@ -310,8 +311,9 @@
   text-align: center;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
   animation: epicEndScreen 0.8s ease forwards;
-  min-width: 400px;
-  min-height: 300px;
+  min-width: 320px;
+  min-height: 500px;
+  width: 90%;
   padding: 3rem 4rem;
   box-sizing: border-box;
 }
@@ -996,7 +998,7 @@ function startLightBeams() {
 }
 
 function launchVictoryEmojis() {
-    const emojis = ['🥇', '🎉', '🏆', '✨', '🔥'];
+    const emojis = ['🥇', '🎉', '🏆', '✨', '🔥', '🎊', '🌟', '💎', '💥', '⚡', '🎖️', '🍀'];
     const overlay = document.getElementById('victoryOverlay');
 
     for (let i = 0; i < 35; i++) {
@@ -1010,31 +1012,111 @@ function launchVictoryEmojis() {
 
         setTimeout(() => {
             emoji.remove();
-        }, 4000);
+        }, 7000);
     }
 }
 
         function triggerRespectCelebration() {
-             console.log("Respect Celebration triggered!");
+    console.log("Respect Celebration triggered!");
 
-              const selectedSound = weightedRandomSound(respectSounds);
-              const audio = new Audio(selectedSound);
-              audio.volume = soundVolumes[selectedSound] || 0.7;
-              audio.play();
+    const selectedSound = weightedRandomSound(respectSounds);
+    if (endScreenAudio) {
+        endScreenAudio.pause();
+        endScreenAudio.currentTime = 0;
+    }
+    endScreenAudio = new Audio(selectedSound);
+    endScreenAudio.volume = soundVolumes[selectedSound] || 0.7;
+    endScreenAudio.play();
 
-                alert("👏 Good Job! Applause emojis flying up! 👏");
-      }
+    const overlay = document.getElementById('victoryOverlay');
+    overlay.innerHTML = ''; // Wichtig: Leeren!
+
+    overlay.style.display = 'flex';
+    overlay.classList.add('active');
+
+    // Emojis starten
+    launchRespectEmojis();
+
+    setTimeout(() => {
+        overlay.classList.add('fading-out');
+
+        setTimeout(() => {
+            overlay.classList.remove('active', 'fading-out');
+            overlay.style.display = 'none';
+            document.getElementById('endScreen').style.display = 'block';
+        }, 1000);
+    }, 2000);
+}
+
+function launchRespectEmojis() {
+    const emojis = ['👏', '🔥', '✨', '🏅', '🙌', '💪', '🤝', '🤙', '😎'];
+    const overlay = document.getElementById('victoryOverlay');
+
+    for (let i = 0; i < 25; i++) {
+        const emoji = document.createElement('div');
+        emoji.classList.add('flying-emoji');
+        emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        emoji.style.left = Math.random() * 90 + "%";
+        emoji.style.top = Math.random() * 70 + 30 + "%";
+        emoji.style.animationDuration = (2 + Math.random() * 2) + "s";
+        overlay.appendChild(emoji);
+
+        setTimeout(() => {
+            emoji.remove();
+        }, 7000);
+    }
+}
 
         function triggerFailureAnimation() {
-            console.log("Failure Animation triggered!");
+    console.log("Failure Animation triggered!");
 
-              const selectedSound = weightedRandomSound(failureSounds);
-              const audio = new Audio(selectedSound);
-              audio.volume = soundVolumes[selectedSound] || 0.7;
-              audio.play();
-
-                alert("😢 Better luck next time! Sad emojis raining. 😢");
+    const selectedSound = weightedRandomSound(failureSounds);
+    if (endScreenAudio) {
+        endScreenAudio.pause();
+        endScreenAudio.currentTime = 0;
     }
+    endScreenAudio = new Audio(selectedSound);
+    endScreenAudio.volume = soundVolumes[selectedSound] || 0.7;
+    endScreenAudio.play();
+
+    const overlay = document.getElementById('victoryOverlay');
+    overlay.innerHTML = ''; // Wichtig: Leeren!
+
+    overlay.style.display = 'flex';
+    overlay.classList.add('active');
+
+    // Emojis starten
+    launchFailureEmojis();
+
+    setTimeout(() => {
+        overlay.classList.add('fading-out');
+
+        setTimeout(() => {
+            overlay.classList.remove('active', 'fading-out');
+            overlay.style.display = 'none';
+            document.getElementById('endScreen').style.display = 'block';
+        }, 1000);
+    }, 2000);
+}
+
+function launchFailureEmojis() {
+    const emojis = ['💀', '☠️', '🥀', '🤡', '😭' '🥴', '😞', '😔'];
+    const overlay = document.getElementById('victoryOverlay');
+
+    for (let i = 0; i < 25; i++) {
+        const emoji = document.createElement('div');
+        emoji.classList.add('flying-emoji');
+        emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        emoji.style.left = Math.random() * 90 + "%";
+        emoji.style.top = Math.random() * 70 + 30 + "%";
+        emoji.style.animationDuration = (2 + Math.random() * 2) + "s";
+        overlay.appendChild(emoji);
+
+        setTimeout(() => {
+            emoji.remove();
+        }, 7000);
+    }
+}
 
  const victoryTexts = [
   "GOLD GOLD GOLD",
