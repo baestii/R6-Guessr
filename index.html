@@ -298,14 +298,17 @@
       border: none;
     }
     #endScreen {
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: fixed;
-  top: 0;
-  left: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100%;
+  min-width: 350px;    
+  max-width: 500px;    
   height: 100%;
   opacity: 0;
   background: linear-gradient(145deg, #2a2a3d, #1c1c2c);
@@ -561,7 +564,7 @@
     <div style="position: absolute; top: 20px; right: 20px;">
   <button id="soundToggleButtonEnd" class="sound-button-end">🔊</button>
 </div>
-    <h2 class="text-3xl font-bold mb-4">🎉 Game Over! You won! 🎉</h2>
+    <h2 id="endScreenTitle" class="text-3xl font-bold mb-4"></h2>
     <p id="finalScore"></p>
     <button onclick="startGame()">Play again</button>
     <button onclick="goToLanding()">Back to start</button>
@@ -1300,13 +1303,13 @@ function getRandomTextWithRare(commonArray, rareArray, rareChance = 0.1) {
        const performance = (score / roundCount) * 100;
 
         if (performance >= 90) {
-  document.querySelector('#endScreen h2').textContent = getRandomTextWithRare(victoryTexts, rareVictoryTexts);
+  document.querySelector('endScreenTitle').textContent = getRandomTextWithRare(victoryTexts, rareVictoryTexts);
   triggerVictoryCelebration();
 } else if (performance >= 50) {
-  document.querySelector('#endScreen h2').textContent = getRandomTextWithRare(respectTexts, rareRespectTexts);
+  document.querySelector('endScreenTitle').textContent = getRandomTextWithRare(respectTexts, rareRespectTexts);
   triggerRespectCelebration();
 } else {
-  document.querySelector('#endScreen h2').textContent = getRandomTextWithRare(failureTexts, rareFailureTexts);
+  document.querySelector('endScreenTitle').textContent = getRandomTextWithRare(failureTexts, rareFailureTexts);
   triggerFailureAnimation();
 }
      
