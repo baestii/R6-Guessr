@@ -747,12 +747,20 @@ Object.keys(mapData).forEach(mapName => {
     let selectedMapButton = null; // aktuell ausgewählter Button merken
 
 
+    function resetDamageOverlay() {
+  const damageOverlay = document.getElementById('damageOverlay');
+  damageOverlay.style.opacity = 0;
+  damageOverlay.innerText = "";
+  damageOverlay.style.pointerEvents = "none";
+}
+    
     function selectRandom(array, count) {
   const shuffled = array.slice().sort(() => 0.5 - Math.random());
   return shuffled.slice(0, count);
 }
     
     function startGame()   {
+      resetDamageOverlay();
       
        if (endScreenAudio) {
         endScreenAudio.pause();
@@ -778,6 +786,7 @@ Object.keys(mapData).forEach(mapName => {
     }
     
     function goToLanding() {
+       resetDamageOverlay(); 
       
       if (endScreenAudio) {
         endScreenAudio.pause();
@@ -1194,26 +1203,33 @@ function launchRespectEmojis() {
 
     // Jetzt den großen Text einblenden
     const randomText = Math.random() < 0.5 ? "You Died" : "WASTED";
+    damageOverlay.style.display = 'flex'; // <<< NEU!
     damageOverlay.innerText = randomText;
     damageOverlay.style.opacity = 1;
+    damageOverlay.style.pointerEvents = 'auto'; // optional
 
     setTimeout(() => {
-    overlay.classList.add('fading-out');
-    setTimeout(() => {
-        overlay.classList.remove('active', 'fading-out');
-        overlay.style.display = 'none';
-        overlay.style.pointerEvents = 'auto'; 
-        
-        // Jetzt ERST Endscreen sauber einblenden
-        const endScreen = document.getElementById('endScreen');
-        endScreen.style.display = 'flex';
+        overlay.classList.add('fading-out');
+
         setTimeout(() => {
-          endScreen.style.opacity = 1;
-        }, 50); // kleine Pause damit Flex-Layout greifen kann
-    }, 300);
-}, 2500);
+            overlay.classList.remove('active', 'fading-out');
+            overlay.style.display = 'none';
+            overlay.style.pointerEvents = 'auto'; 
 
-        }
+            // Damage-Overlay zurücksetzen!
+            damageOverlay.style.opacity = 0;
+            damageOverlay.style.display = 'none';
+            damageOverlay.innerText = '';
+
+            // Jetzt ERST Endscreen sauber einblenden
+            const endScreen = document.getElementById('endScreen');
+            endScreen.style.display = 'flex';
+            setTimeout(() => {
+                endScreen.style.opacity = 1;
+            }, 50); // kleine Pause damit Flex-Layout greifen kann
+        }, 300);
+    }, 2500);
+}
 function launchFailureEmojis() {
     const emojis = ['💀', '☠️', '🥀', '🤡', '😭', '🥴', '😞', '😔'];
     const overlay = document.getElementById('victoryOverlay');
