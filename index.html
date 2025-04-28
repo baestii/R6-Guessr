@@ -137,19 +137,16 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8); 
-  opacity: 0;
-  pointer-events: none;
-  z-index: 100000;
+  background: rgba(0,0,0,0.8);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 5rem;
-  font-weight: bold;
-  color: white;
-  text-shadow: 2px 2px 10px red;
-  transition: opacity 0.5s ease;   
-    }
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10000;          /* oberhalb von #victoryOverlay aber unter #endScreen */
+  transition: opacity 0.5s ease;
+}
     #soundToggleButtonGame {
   position: absolute;
   top: 0.5rem;
@@ -320,12 +317,11 @@
       border: none;
     }
    #endScreen {
-  display: none;
-  opacity: 0;
   position: fixed;
-  top: 30%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: inline-flex;     /* inline-Flex schrumpft auf den Inhalt */
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -335,11 +331,12 @@
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
   color: #f4f4f4;
   z-index: 9999;
-  width: 90vw;
-  max-width: 400px;
-  animation: epicEndScreen 0.3s ease forwards;
+  width: auto;              /* passt sich nur dem Inhalt an */
+  max-width: 90vw;
   text-align: center;
   overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 #endScreen h2 {
   font-size: 2rem;
@@ -1254,75 +1251,58 @@ function launchRespectEmojis() {
 }
 
         function triggerFailureAnimation() {
-    console.log("Failure Animation triggered!");
+  // 1) VictoryOverlay sicherheitshalber ausblenden
+  document.getElementById('victoryOverlay').style.display = 'none';
 
-    const damageOverlay = document.getElementById('damageOverlay');
-    const overlay = document.getElementById('victoryOverlay');
+  // 2) Sound abspielen
+  const soundPath = weightedRandomSound(failureSounds);
+  if (endScreenAudio) {
+    endScreenAudio.pause();
+    endScreenAudio.currentTime = 0;
+  }
+  endScreenAudio = new Audio(soundPath);
+  endScreenAudio.volume = soundVolumes[soundPath] || 0.7;
+  endScreenAudio.play();
 
-    // Alles aufräumen
-    overlay.classList.remove('active', 'fading-out');
-    overlay.style.display = 'none';
-    overlay.style.opacity = 0;
-    overlay.style.pointerEvents = 'none';
-    overlay.innerHTML = '';
+  // 3) Damage-Overlay vorbereiten
+  const dmg = document.getElementById('damageOverlay');
+  dmg.innerHTML = '';                // alten Kram löschen
+  dmg.style.pointerEvents = 'auto';  // wieder klick-/sichtbar
+  dmg.style.display = 'flex';        // CSS-Flex
+  dmg.style.opacity = 0;             // zum animieren
 
-    damageOverlay.style.zIndex = '100001';
-    damageOverlay.style.background = 'rgba(0, 0, 0, 0.8)';
-    damageOverlay.style.pointerEvents = 'none';
-    damageOverlay.innerHTML = '';
-    damageOverlay.style.display = 'flex';
-    damageOverlay.style.opacity = 0;
+  // 4) “You Died” / “WASTED”-Text in die Mitte
+  const txt = document.createElement('div');
+  txt.textContent = Math.random() < 0.5 ? 'You Died' : 'WASTED';
+  Object.assign(txt.style, {
+    fontSize: '5rem',
+    fontWeight: 'bold',
+    color: 'white',
+    textShadow: '2px 2px 10px red',
+    zIndex: '10001',
+  });
+  dmg.appendChild(txt);
 
-    const selectedSound = weightedRandomSound(failureSounds);
-    if (endScreenAudio) {
-        endScreenAudio.pause();
-        endScreenAudio.currentTime = 0;
-    }
-    endScreenAudio = new Audio(selectedSound);
-    endScreenAudio.volume = soundVolumes[selectedSound] || 0.7;
-    endScreenAudio.play();
+  // 5) Emojis starten
+  launchFailureEmojis();
 
-    const randomText = Math.random() < 0.5 ? "You Died" : "WASTED";
-    const textElement = document.createElement('div');
-    textElement.textContent = randomText;
-    textElement.style.fontSize = '5rem';
-    textElement.style.fontWeight = 'bold';
-    textElement.style.color = 'white';
-    textElement.style.textShadow = '2px 2px 10px red';
-    textElement.style.opacity = 0;
-    textElement.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
-    damageOverlay.appendChild(textElement);
+  // 6) Fade-In (kleiner Trick: Reflow erzwingen, dann opacity=1)
+  void dmg.offsetWidth;
+  dmg.style.transition = 'opacity 0.5s ease';
+  dmg.style.opacity = 1;
 
-    launchFailureEmojis(); // Emojis sofort starten
-
+  // 7) Nach 2.5s wieder ausblenden & End-Screen zeigen
+  setTimeout(() => {
+    dmg.style.opacity = 0;
     setTimeout(() => {
-        damageOverlay.style.transition = 'opacity 0.5s ease';
-        damageOverlay.style.opacity = 1;
+      dmg.style.display = 'none';
+      dmg.style.pointerEvents = 'none';
 
-        // Text zoomen
-        textElement.style.transform = 'scale(1.2)';
-        textElement.style.opacity = 1;
-    }, 100);
-
-    setTimeout(() => {
-        textElement.style.transform = 'scale(1.4)';
-    }, 1000);
-
-    setTimeout(() => {
-        damageOverlay.style.opacity = 0; // Alles ausblenden
-    }, 2200);
-
-    setTimeout(() => {
-        damageOverlay.style.display = 'none';
-        damageOverlay.innerHTML = '';
-        damageOverlay.style.zIndex = '100000';
-
-        const endScreen = document.getElementById('endScreen');
-        endScreen.style.display = 'flex';
-        setTimeout(() => {
-            endScreen.style.opacity = 1;
-        }, 50);
-    }, 2600);
+      const es = document.getElementById('endScreen');
+      es.style.display = 'inline-flex';
+      setTimeout(() => { es.style.opacity = 1; }, 20);
+    }, 600);
+  }, 2500);
 }
     
 function launchFailureEmojis() {
