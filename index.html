@@ -324,7 +324,7 @@
   opacity: 0;
   position: fixed;
   top: 30%;
-  left: 50%;
+  left: 40%;
   transform: translate(-50%, -50%);
   flex-direction: column;
   align-items: center;
@@ -1048,20 +1048,22 @@ Object.keys(mapData).forEach(mapName => {
             return soundsArray[0].path;
       }
 
-        function triggerVictoryCelebration() {
+        ffunction triggerVictoryCelebration() {
     console.log("Victory Celebration triggered!");
 
     const overlay = document.getElementById('victoryOverlay');
     const damageOverlay = document.getElementById('damageOverlay');
 
-    // Aufräumen
-    const lightBeams = document.getElementById('lightBeams');
-    const victoryText = document.getElementById('victoryText');
-    if (lightBeams) lightBeams.innerHTML = ''; // NUR Lightbeams innen leeren
-    if (victoryText) victoryText.innerText = 'GOLD GOLD GOLD'; // Standardtext setzen
+    // GANZ WICHTIG: Komplett frischen Inhalt setzen
+    overlay.innerHTML = `
+        <div id="lightBeams"></div>
+        <div id="victoryText">GOLD GOLD GOLD</div>
+    `;
+
     overlay.style.background = 'rgba(0, 0, 0, 0.4)';
     overlay.style.opacity = 1;
     overlay.style.pointerEvents = 'none';
+
     damageOverlay.innerText = '';
     damageOverlay.style.background = 'rgba(0, 0, 0, 0.8)';
     damageOverlay.style.opacity = 0;
@@ -1082,6 +1084,12 @@ Object.keys(mapData).forEach(mapName => {
     startLightBeams();
     launchVictoryEmojis();
 
+    // VictoryText sichtbar machen
+    const victoryText = document.getElementById('victoryText');
+    if (victoryText) {
+        victoryText.style.opacity = 1; 
+    }
+
     setTimeout(() => {
         overlay.classList.add('fading-out');
 
@@ -1092,6 +1100,7 @@ Object.keys(mapData).forEach(mapName => {
         }, 300);
     }, 2500);
 }
+    
 function startLightBeams() {
     const lightBeamsContainer = document.getElementById('lightBeams');
     lightBeamsContainer.innerHTML = '';
@@ -1233,20 +1242,22 @@ function launchRespectEmojis() {
     const damageOverlay = document.getElementById('damageOverlay');
     const overlay = document.getElementById('victoryOverlay');
 
-    // Aufräumen
-    
-    overlay.style.display = 'none'; // GANZ WICHTIG: VictoryOverlay AUS!
-    overlay.innerHTML = ''; 
+    // --- VictoryOverlay sauber deaktivieren ---
+    overlay.classList.remove('active', 'fading-out');
+    overlay.style.display = 'none';
     overlay.style.opacity = 0;
     overlay.style.pointerEvents = 'none';
+    overlay.innerHTML = '';
 
-    damageOverlay.innerText = '';
+    // --- DamageOverlay vorbereiten ---
+    damageOverlay.style.zIndex = '100001'; // GANZ WICHTIG: vor allem anderen!
     damageOverlay.style.background = 'rgba(0, 0, 0, 0.8)';
-    damageOverlay.style.opacity = 0;
-    damageOverlay.style.display = 'none';
     damageOverlay.style.pointerEvents = 'none';
- 
+    damageOverlay.innerText = '';
+    damageOverlay.style.display = 'flex';
+    damageOverlay.style.opacity = 0; // startet unsichtbar
 
+    // --- Sound abspielen ---
     const selectedSound = weightedRandomSound(failureSounds);
     if (endScreenAudio) {
         endScreenAudio.pause();
@@ -1256,25 +1267,28 @@ function launchRespectEmojis() {
     endScreenAudio.volume = soundVolumes[selectedSound] || 0.7;
     endScreenAudio.play();
 
-    // DamageOverlay aktivieren
+    // --- Jetzt WASTED oder YOU DIED Text setzen ---
     const randomText = Math.random() < 0.5 ? "You Died" : "WASTED";
     damageOverlay.innerText = randomText;
-    damageOverlay.style.display = 'flex';
+
+    // --- DamageOverlay einblenden ---
     setTimeout(() => {
         damageOverlay.style.opacity = 1;
     }, 50);
-          
-    launchFailureEmojis(); // Emojis fliegen trotzdem!
 
+    // --- Emojis losfliegen lassen ---
+    launchFailureEmojis();
+
+    // --- Ablauf nach der Animation ---
     setTimeout(() => {
-        // DamageOverlay ausfaden
-        damageOverlay.style.opacity = 0;
-
+        damageOverlay.style.opacity = 0; // Ausblenden
+        
         setTimeout(() => {
             damageOverlay.style.display = 'none';
             damageOverlay.innerText = '';
+            damageOverlay.style.zIndex = '100000'; // zurücksetzen, sicherheitshalber
 
-            // Endscreen danach einblenden
+            // Endscreen sauber einblenden
             const endScreen = document.getElementById('endScreen');
             endScreen.style.display = 'flex';
             setTimeout(() => {
