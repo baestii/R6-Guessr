@@ -758,9 +758,42 @@ Object.keys(mapData).forEach(mapName => {
   const shuffled = array.slice().sort(() => 0.5 - Math.random());
   return shuffled.slice(0, count);
 }
+
+    function resetEndScreenAndOverlays() {
+    const overlay = document.getElementById('victoryOverlay');
+    const damageOverlay = document.getElementById('damageOverlay');
+    const lightBeamsContainer = document.getElementById('lightBeams');
+    const victoryText = document.getElementById('victoryText');
+    const endScreen = document.getElementById('endScreen');
+
+    // Victory Overlay reset
+    overlay.style.display = 'none';
+    overlay.classList.remove('active', 'fading-out');
+    overlay.style.background = 'rgba(0, 0, 0, 0.4)';
+    overlay.innerHTML = `
+    <div id="lightBeams"></div>
+    <div id="victoryText">GOLD GOLD GOLD</div>
+`;
+
+    // Damage Overlay reset
+    damageOverlay.style.display = 'none';
+    damageOverlay.style.opacity = 0;
+    damageOverlay.innerText = '';
+    damageOverlay.style.pointerEvents = 'none';
+
+    // LightBeams komplett neu aufbauen (sicher ist sicher)
+    if (lightBeamsContainer) {
+        lightBeamsContainer.innerHTML = '';
+    }
+
+    // Endscreen reset
+    endScreen.style.display = 'none';
+    endScreen.style.opacity = '0';
+}
     
     function startGame()   {
       resetDamageOverlay();
+      resetEndScreenAndOverlays();
       
        if (endScreenAudio) {
         endScreenAudio.pause();
@@ -1019,6 +1052,19 @@ Object.keys(mapData).forEach(mapName => {
         function triggerVictoryCelebration() {
     console.log("Victory Celebration triggered!");
 
+    const overlay = document.getElementById('victoryOverlay');
+    const damageOverlay = document.getElementById('damageOverlay');
+
+    // Aufräumen
+    overlay.innerHTML = '';
+    overlay.style.background = 'rgba(0, 0, 0, 0.4)';
+    overlay.style.opacity = 1;
+    overlay.style.pointerEvents = 'none';
+    damageOverlay.innerText = '';
+    damageOverlay.style.background = 'rgba(0, 0, 0, 0.8)';
+    damageOverlay.style.opacity = 0;
+    damageOverlay.style.display = 'none';
+
     const selectedSound = weightedRandomSound(victorySounds);
     if (endScreenAudio) {
         endScreenAudio.pause();
@@ -1028,28 +1074,22 @@ Object.keys(mapData).forEach(mapName => {
     endScreenAudio.volume = soundVolumes[selectedSound] || 0.7;
     endScreenAudio.play();
 
-    // Neues: Victory Overlay anzeigen
-    const overlay = document.getElementById('victoryOverlay');
     overlay.style.display = 'flex';
     overlay.classList.add('active');
 
-    // Lightbeams starten
     startLightBeams();
-    // Emojis starten
     launchVictoryEmojis();
 
     setTimeout(() => {
         overlay.classList.add('fading-out');
 
-        // Nach dem Fadeout wieder richtig verstecken
         setTimeout(() => {
             overlay.classList.remove('active', 'fading-out');
             overlay.style.display = 'none';
             document.getElementById('endScreen').style.display = 'block';
-        }, 300); // Fadeout dauert 1s
-    }, 2500); // 4 Sekunden sichtbar bleiben
+        }, 300);
+    }, 2500);
 }
-
 function startLightBeams() {
     const lightBeamsContainer = document.getElementById('lightBeams');
     lightBeamsContainer.innerHTML = '';
@@ -1103,6 +1143,19 @@ function launchVictoryEmojis() {
         function triggerRespectCelebration() {
     console.log("Respect Celebration triggered!");
 
+    const overlay = document.getElementById('victoryOverlay');
+    const damageOverlay = document.getElementById('damageOverlay');
+
+    // Aufräumen
+    overlay.innerHTML = '';
+    overlay.style.background = 'rgba(0, 0, 0, 0.4)';
+    overlay.style.opacity = 1;
+    overlay.style.pointerEvents = 'none';
+    damageOverlay.innerText = '';
+    damageOverlay.style.background = 'rgba(0, 0, 0, 0.8)';
+    damageOverlay.style.opacity = 0;
+    damageOverlay.style.display = 'none';
+
     const selectedSound = weightedRandomSound(respectSounds);
     if (endScreenAudio) {
         endScreenAudio.pause();
@@ -1112,30 +1165,24 @@ function launchVictoryEmojis() {
     endScreenAudio.volume = soundVolumes[selectedSound] || 0.7;
     endScreenAudio.play();
 
-    const overlay = document.getElementById('victoryOverlay');
-    overlay.innerHTML = ''; // Leeren
-    overlay.style.background = 'rgba(0, 0, 0, 0.4)'; // Startfarbe
-
     overlay.style.display = 'flex';
     overlay.classList.add('active');
 
-    // Neuer sanfter Übergang ins Blau
     setTimeout(() => {
-      overlay.style.transition = 'background 1.5s ease';
-      overlay.style.background = 'rgba(70, 130, 180, 0.5)'; // SteelBlue Farbe
+        overlay.style.transition = 'background 1.5s ease';
+        overlay.style.background = 'rgba(70, 130, 180, 0.5)';
     }, 100);
 
-    // Emojis starten
     launchRespectEmojis();
 
     setTimeout(() => {
-        overlay.style.transition = 'opacity 1s ease'; // <- Wichtig
+        overlay.style.transition = 'opacity 1s ease';
         overlay.style.opacity = 0;
 
         setTimeout(() => {
             overlay.classList.remove('active', 'fading-out');
             overlay.style.display = 'none';
-            overlay.style.opacity = 1; 
+            overlay.style.opacity = 1;
             document.getElementById('endScreen').style.display = 'block';
         }, 1000);
     }, 1800);
@@ -1184,6 +1231,15 @@ function launchRespectEmojis() {
     const damageOverlay = document.getElementById('damageOverlay');
     const overlay = document.getElementById('victoryOverlay');
 
+    overlay.innerHTML = ''; // Alles aus VictoryOverlay löschen (alte Emojis, Beams etc.)
+    overlay.style.background = 'transparent'; // Hintergrund zurücksetzen
+    overlay.style.opacity = 1; // Sicherheitshalber volle Sichtbarkeit
+    overlay.style.pointerEvents = 'none'; // Kein Klicken
+    damageOverlay.innerText = ''; // Text löschen
+    damageOverlay.style.background = 'rgba(0, 0, 0, 0.8)'; // Hintergrund neu setzen
+    damageOverlay.style.opacity = 0; // Anfangs unsichtbar
+    damageOverlay.style.display = 'none'; // Anfangs verstecken
+          
     const selectedSound = weightedRandomSound(failureSounds);
     if (endScreenAudio) {
         endScreenAudio.pause();
@@ -1199,11 +1255,15 @@ function launchRespectEmojis() {
     overlay.style.display = 'flex';
     overlay.classList.add('active');
 
+     overlay.style.display = 'flex';
+    overlay.classList.add('active');      
+
     launchFailureEmojis(); // Emojis fliegen!
 
     // Jetzt den großen Text einblenden
     const randomText = Math.random() < 0.5 ? "You Died" : "WASTED";
     damageOverlay.style.display = 'flex'; // <<< NEU!
+    damageOverlay.style.background = 'rgba(0, 0, 0, 0.8)'
     damageOverlay.innerText = randomText;
     damageOverlay.style.opacity = 1;
     damageOverlay.style.pointerEvents = 'auto'; // optional
@@ -1374,6 +1434,8 @@ function getRandomTextWithRare(commonArray, rareArray, rareChance = 0.1) {
     
     
      function endGame() {
+       resetEndScreenAndOverlays();
+       
         document.getElementById('finalScore').textContent = `You scored ${score} out of ${roundCount}!`;
         document.getElementById('endScreen').style.opacity = '1';
         document.getElementById('gameFeedback').style.display = 'none';
