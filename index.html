@@ -319,29 +319,27 @@
       border-radius: 0.5rem;
       border: none;
     }
-    #endScreen {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+   #endScreen {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(145deg, #2a2a3d, #1c1c2c);
-  color: #f4f4f4;
-  padding: 4rem 3rem 3rem;
+  padding: 5rem 3rem 2rem;
   border-radius: 1rem;
-  z-index: 9999;
-  text-align: center;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-  animation: epicEndScreen 0.3s ease forwards;
-  box-sizing: border-box;
+  color: #f4f4f4;
+  z-index: 9999;
+  width: max-content;
   max-width: 90vw;
-  width: auto; /* <<< fit-content weg! */
-  white-space: normal; /* <<< nowrap entfernen */
-  overflow: hidden;
   opacity: 0;
+  animation: epicEndScreen 0.3s ease forwards;
+  text-align: center;
+  overflow: hidden;
 }
 #endScreen h2 {
   font-size: 1.6rem;
@@ -469,6 +467,16 @@
   transform-origin: top center;
   animation: beamSweep 4s infinite alternate ease-in-out, fadeInEmoji 0.3s ease forwards;
 }
+  #endScreen .sound-button-end {
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  color: inherit;
+  font-size: 2rem;
+  cursor: pointer;
+}  
+    
 @keyframes fadeInEmoji {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -1177,6 +1185,7 @@ function launchRespectEmojis() {
 
     overlay.innerHTML = ''; // Emojis vorbereiten
     overlay.style.background = 'transparent';
+    overlay.style.pointerEvents = 'none';
     overlay.style.display = 'flex';
     overlay.classList.add('active');
 
@@ -1196,6 +1205,7 @@ function launchRespectEmojis() {
         setTimeout(() => {
             overlay.classList.remove('active', 'fading-out');
             overlay.style.display = 'none';
+            overlay.style.pointerEvents = 'auto';
             document.getElementById('endScreen').style.display = 'block';
         }, 300);
     }, 2500);
