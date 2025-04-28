@@ -330,14 +330,13 @@
   align-items: center;
   justify-content: center;
   background: linear-gradient(145deg, #2a2a3d, #1c1c2c);
-  padding: 4rem 5rem 2rem;
+  padding: 4rem 2rem 2rem;
   border-radius: 1rem;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
   color: #f4f4f4;
   z-index: 9999;
-  width: auto;
-  max-width: 90vw;
-  min-width: 300px;
+  width: 90vw;
+  max-width: 400px;
   animation: epicEndScreen 0.3s ease forwards;
   text-align: center;
   overflow: hidden;
@@ -356,14 +355,21 @@
   font-size: 1.3rem;
   margin-bottom: 2rem;
 }
-
+#endScreenButtons {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap; /* Wichtig für Handy-Bildschirme */
+  margin-top: 1.5rem;
+}
+    
 #endScreenButtons button {
   background-color: #4e8cff;
   color: white;
   padding: 0.7rem 1.5rem;
   font-size: 1rem;
-  display: flex;
-  gap: 1rem;
+  margin: 0.5rem;
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
