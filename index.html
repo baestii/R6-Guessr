@@ -140,7 +140,7 @@
   background: rgba(0, 0, 0, 0.8); 
   opacity: 0;
   pointer-events: none;
-  z-index: 10000;
+  z-index: 100000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -162,18 +162,17 @@
   line-height: 1;
 }
   .sound-button-end {
+  all: unset;
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: none;
-  border: none;
   cursor: pointer;
   font-size: 2rem;
   color: inherit;
-}  
-  .sound-button-end:hover {
+}
+.sound-button-end:hover {
   filter: brightness(1.2);
-}  
+}
     #screenshot {
   width: 90%; /* Nicht ganz so breit */
   height: auto;
@@ -328,22 +327,21 @@
   position: fixed;
   top: 50%;
   left: 50%;
-  right: auto;
   transform: translate(-50%, -50%);
-  opacity: 0;
   background: linear-gradient(145deg, #2a2a3d, #1c1c2c);
   color: #f4f4f4;
-  padding: 5rem 3rem 2rem;
+  padding: 4rem 3rem 3rem;
   border-radius: 1rem;
   z-index: 9999;
   text-align: center;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
   animation: epicEndScreen 0.3s ease forwards;
   box-sizing: border-box;
+  max-width: 90vw;
+  width: auto; /* <<< fit-content weg! */
+  white-space: normal; /* <<< nowrap entfernen */
   overflow: hidden;
-  max-width: 90vw; /* Maximal 90% der Viewport-Breite */
-  white-space: nowrap; /* Verhindert Zeilenumbruch */
-  width: fit-content;   
+  opacity: 0;
 }
 #endScreen h2 {
   font-size: 1.6rem;
