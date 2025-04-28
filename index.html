@@ -140,7 +140,7 @@
   background: rgba(0, 0, 0, 0.8); 
   opacity: 0;
   pointer-events: none;
-  z-index: 999999;
+  z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -169,6 +169,10 @@
   border: none;
   cursor: pointer;
   font-size: 2rem;
+  color: inherit;
+}  
+  .sound-button-end:hover {
+  filter: brightness(1.2);
 }  
     #screenshot {
   width: 90%; /* Nicht ganz so breit */
@@ -321,11 +325,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   right: auto;
-  transform: translate(-50%, -50%) translateX(-50%);
+  transform: translate(-50%, -50%);
   opacity: 0;
   background: linear-gradient(145deg, #2a2a3d, #1c1c2c);
   color: #f4f4f4;
@@ -339,6 +343,7 @@
   overflow: hidden;
   max-width: 90vw; /* Maximal 90% der Viewport-Breite */
   white-space: nowrap; /* Verhindert Zeilenumbruch */
+  width: fit-content;   
 }
 #endScreen h2 {
   font-size: 1.6rem;
@@ -1159,7 +1164,9 @@ function launchRespectEmojis() {
 
         function triggerFailureAnimation() {
     console.log("Failure Animation triggered!");
-    const damageOverlay = document.getElementById('damageOverlay');      
+
+    const damageOverlay = document.getElementById('damageOverlay');
+    const overlay = document.getElementById('victoryOverlay');
 
     const selectedSound = weightedRandomSound(failureSounds);
     if (endScreenAudio) {
@@ -1170,16 +1177,16 @@ function launchRespectEmojis() {
     endScreenAudio.volume = soundVolumes[selectedSound] || 0.7;
     endScreenAudio.play();
 
-    const overlay = document.getElementById('victoryOverlay');
-    overlay.innerHTML = ''; // Wichtig: Leeren!
-    overlay.style.background = 'transparent'; // Kein dunkler Hintergrund
+    overlay.innerHTML = ''; // Emojis vorbereiten
+    overlay.style.background = 'transparent';
     overlay.style.display = 'flex';
     overlay.classList.add('active');
 
-    launchFailureEmojis();
+    launchFailureEmojis(); // Emojis fliegen!
 
-    // Minecraft Death oder GTA Wasted Text
-    damageOverlay.innerText = Math.random() < 0.5 ? "You Died" : "WASTED"; 
+    // Jetzt den großen Text einblenden
+    const randomText = Math.random() < 0.5 ? "You Died" : "WASTED";
+    damageOverlay.innerText = randomText;
     damageOverlay.style.opacity = 1;
 
     setTimeout(() => {
@@ -1193,7 +1200,7 @@ function launchRespectEmojis() {
             overlay.style.display = 'none';
             document.getElementById('endScreen').style.display = 'block';
         }, 300);
-    }, 2000);
+    }, 2500);
 }
 
 function launchFailureEmojis() {
