@@ -321,11 +321,11 @@
     }
    #endScreen {
   display: none;
-  opactiy: 0;
+  opacity: 0;
   position: fixed;
-  top: 50%;
+  top: 30%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -30%);
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -337,7 +337,6 @@
   z-index: 9999;
   width: max-content;
   max-width: 90vw;
-  opacity: 0;
   animation: epicEndScreen 0.3s ease forwards;
   text-align: center;
   overflow: hidden;
@@ -1056,7 +1055,10 @@ Object.keys(mapData).forEach(mapName => {
     const damageOverlay = document.getElementById('damageOverlay');
 
     // Aufräumen
-    overlay.innerHTML = '';
+    const lightBeams = document.getElementById('lightBeams');
+    const victoryText = document.getElementById('victoryText');
+    if (lightBeams) lightBeams.innerHTML = ''; // NUR Lightbeams innen leeren
+    if (victoryText) victoryText.innerText = 'GOLD GOLD GOLD'; // Standardtext setzen
     overlay.style.background = 'rgba(0, 0, 0, 0.4)';
     overlay.style.opacity = 1;
     overlay.style.pointerEvents = 'none';
@@ -1231,15 +1233,19 @@ function launchRespectEmojis() {
     const damageOverlay = document.getElementById('damageOverlay');
     const overlay = document.getElementById('victoryOverlay');
 
-    overlay.innerHTML = ''; // Alles aus VictoryOverlay löschen (alte Emojis, Beams etc.)
-    overlay.style.background = 'transparent'; // Hintergrund zurücksetzen
-    overlay.style.opacity = 1; // Sicherheitshalber volle Sichtbarkeit
-    overlay.style.pointerEvents = 'none'; // Kein Klicken
-    damageOverlay.innerText = ''; // Text löschen
-    damageOverlay.style.background = 'rgba(0, 0, 0, 0.8)'; // Hintergrund neu setzen
-    damageOverlay.style.opacity = 0; // Anfangs unsichtbar
-    damageOverlay.style.display = 'none'; // Anfangs verstecken
-          
+    // Aufräumen
+    overlay.innerHTML = ''; 
+    overlay.style.background = 'transparent';
+    overlay.style.opacity = 1;
+    overlay.style.pointerEvents = 'none';
+
+    damageOverlay.innerText = '';
+    damageOverlay.style.background = 'rgba(0, 0, 0, 0.8)';
+    damageOverlay.style.opacity = 0;
+    damageOverlay.style.display = 'none';
+    damageOverlay.style.pointerEvents = 'none';
+    damageOverlay.style.zIndex = 100001; // NEU: DamageOverlay VOR VictoryOverlay schieben
+
     const selectedSound = weightedRandomSound(failureSounds);
     if (endScreenAudio) {
         endScreenAudio.pause();
@@ -1249,44 +1255,41 @@ function launchRespectEmojis() {
     endScreenAudio.volume = soundVolumes[selectedSound] || 0.7;
     endScreenAudio.play();
 
-    overlay.innerHTML = ''; // Emojis vorbereiten
-    overlay.style.background = 'transparent';
-    overlay.style.pointerEvents = 'none';
+    // VictoryOverlay vorbereiten
     overlay.style.display = 'flex';
     overlay.classList.add('active');
 
-     overlay.style.display = 'flex';
-    overlay.classList.add('active');      
+    launchFailureEmojis();
 
-    launchFailureEmojis(); // Emojis fliegen!
-
-    // Jetzt den großen Text einblenden
+    // DamageOverlay aktivieren (Text + Hintergrund)
     const randomText = Math.random() < 0.5 ? "You Died" : "WASTED";
-    damageOverlay.style.display = 'flex'; // <<< NEU!
-    damageOverlay.style.background = 'rgba(0, 0, 0, 0.8)'
     damageOverlay.innerText = randomText;
+    damageOverlay.style.display = 'flex';
     damageOverlay.style.opacity = 1;
-    damageOverlay.style.pointerEvents = 'auto'; // optional
+    damageOverlay.style.pointerEvents = 'auto';
 
     setTimeout(() => {
         overlay.classList.add('fading-out');
 
         setTimeout(() => {
+            // VictoryOverlay verstecken
             overlay.classList.remove('active', 'fading-out');
             overlay.style.display = 'none';
-            overlay.style.pointerEvents = 'auto'; 
+            overlay.style.pointerEvents = 'auto';
 
-            // Damage-Overlay zurücksetzen!
+            // DamageOverlay zurücksetzen
             damageOverlay.style.opacity = 0;
             damageOverlay.style.display = 'none';
+            damageOverlay.style.pointerEvents = 'none';
             damageOverlay.innerText = '';
+            damageOverlay.style.zIndex = 100000; // NEU: Z-Index wieder normal
 
-            // Jetzt ERST Endscreen sauber einblenden
+            // Endscreen einblenden
             const endScreen = document.getElementById('endScreen');
             endScreen.style.display = 'flex';
             setTimeout(() => {
                 endScreen.style.opacity = 1;
-            }, 50); // kleine Pause damit Flex-Layout greifen kann
+            }, 50);
         }, 300);
     }, 2500);
 }
