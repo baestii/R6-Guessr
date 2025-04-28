@@ -325,7 +325,7 @@
   position: fixed;
   top: 30%;
   left: 50%;
-  transform: translate(-50%, -30%);
+  transform: translate(-50%, -50%);
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -1234,9 +1234,10 @@ function launchRespectEmojis() {
     const overlay = document.getElementById('victoryOverlay');
 
     // Aufräumen
+    
+    overlay.style.display = 'none'; // GANZ WICHTIG: VictoryOverlay AUS!
     overlay.innerHTML = ''; 
-    overlay.style.background = 'transparent';
-    overlay.style.opacity = 1;
+    overlay.style.opacity = 0;
     overlay.style.pointerEvents = 'none';
 
     damageOverlay.innerText = '';
@@ -1244,7 +1245,7 @@ function launchRespectEmojis() {
     damageOverlay.style.opacity = 0;
     damageOverlay.style.display = 'none';
     damageOverlay.style.pointerEvents = 'none';
-    damageOverlay.style.zIndex = 100001; // NEU: DamageOverlay VOR VictoryOverlay schieben
+ 
 
     const selectedSound = weightedRandomSound(failureSounds);
     if (endScreenAudio) {
@@ -1255,36 +1256,25 @@ function launchRespectEmojis() {
     endScreenAudio.volume = soundVolumes[selectedSound] || 0.7;
     endScreenAudio.play();
 
-    // VictoryOverlay vorbereiten
-    overlay.style.display = 'flex';
-    overlay.classList.add('active');
-
-    launchFailureEmojis();
-
-    // DamageOverlay aktivieren (Text + Hintergrund)
+    // DamageOverlay aktivieren
     const randomText = Math.random() < 0.5 ? "You Died" : "WASTED";
     damageOverlay.innerText = randomText;
     damageOverlay.style.display = 'flex';
-    damageOverlay.style.opacity = 1;
-    damageOverlay.style.pointerEvents = 'auto';
+    setTimeout(() => {
+        damageOverlay.style.opacity = 1;
+    }, 50);
+          
+    launchFailureEmojis(); // Emojis fliegen trotzdem!
 
     setTimeout(() => {
-        overlay.classList.add('fading-out');
+        // DamageOverlay ausfaden
+        damageOverlay.style.opacity = 0;
 
         setTimeout(() => {
-            // VictoryOverlay verstecken
-            overlay.classList.remove('active', 'fading-out');
-            overlay.style.display = 'none';
-            overlay.style.pointerEvents = 'auto';
-
-            // DamageOverlay zurücksetzen
-            damageOverlay.style.opacity = 0;
             damageOverlay.style.display = 'none';
-            damageOverlay.style.pointerEvents = 'none';
             damageOverlay.innerText = '';
-            damageOverlay.style.zIndex = 100000; // NEU: Z-Index wieder normal
 
-            // Endscreen einblenden
+            // Endscreen danach einblenden
             const endScreen = document.getElementById('endScreen');
             endScreen.style.display = 'flex';
             setTimeout(() => {
@@ -1293,6 +1283,7 @@ function launchRespectEmojis() {
         }, 300);
     }, 2500);
 }
+    
 function launchFailureEmojis() {
     const emojis = ['💀', '☠️', '🥀', '🤡', '😭', '🥴', '😞', '😔'];
     const overlay = document.getElementById('victoryOverlay');
