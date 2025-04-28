@@ -320,11 +320,12 @@
       border: none;
     }
    #endScreen {
+  display: none;
+  opactiy: 0;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -1197,19 +1198,20 @@ function launchRespectEmojis() {
     damageOverlay.style.opacity = 1;
 
     setTimeout(() => {
-        damageOverlay.style.opacity = 0;
-    }, 2000);
-
+    overlay.classList.add('fading-out');
     setTimeout(() => {
-        overlay.classList.add('fading-out');
+        overlay.classList.remove('active', 'fading-out');
+        overlay.style.display = 'none';
+        overlay.style.pointerEvents = 'auto'; 
+        
+        // Jetzt ERST Endscreen sauber einblenden
+        const endScreen = document.getElementById('endScreen');
+        endScreen.style.display = 'flex';
         setTimeout(() => {
-            overlay.classList.remove('active', 'fading-out');
-            overlay.style.display = 'none';
-            overlay.style.pointerEvents = 'auto';
-            document.getElementById('endScreen').style.display = 'block';
-        }, 300);
-    }, 2500);
-}
+          endScreen.style.opacity = 1;
+        }, 50); // kleine Pause damit Flex-Layout greifen kann
+    }, 300);
+}, 2500);
 
 function launchFailureEmojis() {
     const emojis = ['💀', '☠️', '🥀', '🤡', '😭', '🥴', '😞', '😔'];
